@@ -8,15 +8,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --bg-color: #fdf2f8; --text-color: #1f2937; }
-        
+        :root {
+            --bg-color: #fdf2f8;
+            --text-color: #1f2937;
+            --accent: #ff4fa3;
+            --accent-2: #7c3aed;
+            --surface: rgba(255,255,255,0.76);
+            --surface-strong: rgba(255,255,255,0.95);
+        }
+
         html, body {
             height: 100%; height: 100dvh; margin: 0; padding: 0;
             overflow: hidden; touch-action: manipulation;
             font-family: 'Tajawal', sans-serif;
-            background-color: var(--bg-color);
+            background: linear-gradient(135deg, #fff7fb 0%, #f5f3ff 45%, #ecfeff 100%);
+            color: var(--text-color);
             transition: background-color 1.5s ease-in-out;
             -webkit-user-select: none; user-select: none;
+        }
+
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            width: 24rem;
+            height: 24rem;
+            border-radius: 9999px;
+            filter: blur(90px);
+            opacity: 0.22;
+            pointer-events: none;
+            z-index: 0;
+            animation: drift 12s ease-in-out infinite alternate;
+        }
+
+        body::before {
+            background: #f472b6;
+            top: -6rem;
+            right: -6rem;
+        }
+
+        body::after {
+            background: #60a5fa;
+            bottom: -8rem;
+            left: -7rem;
+            animation-direction: alternate-reverse;
+        }
+
+        @keyframes drift {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            100% { transform: translate3d(20px, -30px, 0) scale(1.08); }
         }
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -38,16 +77,72 @@
         }
         @keyframes scrollClouds { from { background-position: 0 0; } to { background-position: 100px 100px; } }
 
+        .glass-panel {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.7);
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.82));
+            border: 1px solid rgba(255,255,255,0.9);
+            box-shadow: 0 30px 60px rgba(139, 92, 246, 0.16);
+        }
+
+        .soft-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 9999px;
+            padding: 0.45rem 0.8rem;
+            font-weight: 800;
+            color: #6d28d9;
+            box-shadow: 0 8px 18px rgba(15,23,42,0.06);
+        }
+
+        .premium-button {
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 24px rgba(74, 222, 128, 0.24);
+        }
+
+        .premium-button::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transform: translateX(-120%);
+            transition: transform 0.6s ease;
+        }
+
+        .premium-button:hover::after {
+            transform: translateX(120%);
+        }
+
         .cover-item {
             position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background-color: white; border-radius: 22%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 4px solid rgba(255,255,255,0.9);
+            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,252,0.95));
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,0.8);
+            border: 4px solid rgba(255,255,255,0.95);
             transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s, box-shadow 0.3s;
             cursor: pointer; z-index: 20; -webkit-tap-highlight-color: transparent;
             text-align: center; overflow: hidden;
         }
 
-        .cover-item:active { transform: scale(0.92); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .cover-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(255,255,255,0.5), transparent 55%);
+            pointer-events: none;
+        }
+
+        .cover-item:active { transform: scale(0.92); box-shadow: 0 8px 18px rgba(0,0,0,0.12); }
         .item-emoji { font-size: clamp(2.5rem, 8vw, 6rem); line-height: 1.1; margin-bottom: 8px; }
         .item-text { font-size: clamp(0.9rem, 3.5vw, 1.5rem); font-weight: 900; color: #374151; padding: 0 8px; line-height: 1.3; }
 
@@ -58,14 +153,32 @@
         }
 
         .shuffling { transition: left 1.2s ease-in-out, top 1.2s ease-in-out; pointer-events: none; }
-        .modal-glass { backdrop-filter: blur(8px); background-color: rgba(255, 255, 255, 0.85); }
-        
+        .modal-glass { backdrop-filter: blur(14px); background-color: rgba(255, 255, 255, 0.84); }
+
+        .progress-track {
+            position: relative;
+            height: 0.7rem;
+            width: 100%;
+            border-radius: 9999px;
+            background: rgba(226, 232, 240, 0.9);
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(15,23,42,0.12);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #fb7185 0%, #8b5cf6 100%);
+            transition: width 0.4s ease;
+        }
+
         .night-mode { background-color: #0f172a !important; color: #f8fafc !important; }
-        .night-mode .cover-item { background-color: #1e293b; border-color: #334155; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .night-mode .cover-item { background: linear-gradient(145deg, #1e293b, #334155); border-color: #475569; color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.35); }
         .night-mode .item-text { color: #f1f5f9; }
-        
+
         .space-mode { background-color: #170b3b !important; color: #f8fafc !important; }
-        .space-mode .cover-item { background-color: #2e1065; border-color: #4c1d95; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .space-mode .cover-item { background: linear-gradient(145deg, #2e1065, #4c1d95); border-color: #6d28d9; color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         .space-mode .item-text { color: #e0e7ff; }
 
         #env-interactable {
@@ -96,14 +209,50 @@
             animation: pulse-soft 1s infinite alternate !important;
         }
 
-        /* تنسيق المتجر */
         .shop-item { transition: all 0.3s ease; }
         .shop-item.locked { filter: grayscale(100%) opacity(0.6); }
         .shop-item.locked:hover { filter: grayscale(50%) opacity(1); }
 
+        /* Responsive button layout */
+        .top-buttons-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: 0.75rem 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            gap: 0.35rem;
+        }
+
+        .top-buttons-container > div {
+            pointer-events: auto;
+        }
+
+        .top-left-buttons {
+            display: flex;
+            gap: 0.35rem;
+        }
+
+        @media (min-width: 640px) {
+            .top-buttons-container {
+                padding: 1rem 1.5rem;
+                gap: 0.75rem;
+            }
+            .top-left-buttons {
+                gap: 0.75rem;
+            }
+        }
+
         @media (min-width: 768px) {
             #env-interactable { top: 20px; right: 20px; font-size: 5rem; }
             .cover-item { border-width: 6px; }
+            .top-buttons-container {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -122,18 +271,20 @@
     </div>
 
     <!-- أزرار الواجهة الرئيسية -->
-    <div onclick="requestLinkOpen('https://ts-gsm.dz'); event.stopPropagation();" class="absolute top-4 left-4 md:top-6 md:left-6 z-50 bg-white/90 backdrop-blur border-2 border-yellow-400 p-2 md:p-3 rounded-full shadow-lg cursor-pointer hover:scale-105 transition-transform group">
-        <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-ping opacity-75"></div>
-        <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></div>
-        <span class="text-2xl md:text-3xl block group-hover:animate-bounce">🎓</span>
-    </div>
-
-    <div id="trophy-btn" class="absolute top-4 left-20 md:top-6 md:left-28 z-50 bg-white/90 backdrop-blur border-2 border-orange-400 p-2 md:p-3 rounded-full shadow-lg cursor-pointer hover:scale-105 transition-transform text-2xl md:text-3xl" onclick="showTrophyRoom(); event.stopPropagation();">
-        🏆
-    </div>
-
-    <div id="mute-btn" class="absolute top-4 right-4 md:top-6 md:right-6 z-50 bg-white/90 backdrop-blur border-2 border-gray-200 p-2 md:p-3 rounded-full shadow-md cursor-pointer hover:scale-105 transition-transform text-2xl md:text-3xl" onclick="event.stopPropagation();">
-        🔊
+    <div class="top-buttons-container">
+        <div class="top-left-buttons">
+            <div onclick="requestLinkOpen('https://ts-gsm.dz'); event.stopPropagation();" class="bg-white/90 backdrop-blur border-2 border-yellow-400 p-2 md:p-3 rounded-full shadow-lg cursor-pointer hover:scale-105 transition-transform group relative">
+                <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-ping opacity-75"></div>
+                <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></div>
+                <span class="text-2xl md:text-3xl block group-hover:animate-bounce">🎓</span>
+            </div>
+            <div id="trophy-btn" class="bg-white/90 backdrop-blur border-2 border-orange-400 p-2 md:p-3 rounded-full shadow-lg cursor-pointer hover:scale-105 transition-transform text-2xl md:text-3xl" onclick="showTrophyRoom(); event.stopPropagation();">
+                🏆
+            </div>
+        </div>
+        <div id="mute-btn" class="bg-white/90 backdrop-blur border-2 border-gray-200 p-2 md:p-3 rounded-full shadow-md cursor-pointer hover:scale-105 transition-transform text-2xl md:text-3xl" onclick="event.stopPropagation();">
+            🔊
+        </div>
     </div>
 
     <!-- غرفة الإنجازات (Trophy Room) -->
@@ -168,23 +319,31 @@
 
     <!-- شاشة البداية -->
     <div id="start-screen" class="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-pink-50 clouds-bg z-40 transition-opacity duration-500 w-full h-full">
-        <div class="flex-1 flex flex-col justify-center items-center w-full px-4 mt-8 relative z-10">
-            <div class="bg-indigo-100 text-indigo-800 px-4 py-1 rounded-full font-black text-sm mb-4 border border-indigo-300 animate-pulse">الإصدار اللانهائي ♾️</div>
-            <h1 class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mb-4 text-center leading-tight drop-shadow-sm">
-                أين الحلوى<br>يا سُكّر؟
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-600 mb-8 font-bold bg-white/80 px-6 py-2 rounded-full shadow-sm border border-gray-200">العب، تعلم، واشترِ أصدقاء جدد!</p>
-            
-            <div class="text-9xl md:text-[12rem] mb-12 animate-float drop-shadow-xl relative cursor-pointer hover:scale-105 transition-transform" onclick="playMarimba(800); playMarimba(1000,0.1); speakWord('أَنَا سُكَّر!'); event.stopPropagation();">
+        <div class="flex-1 flex flex-col justify-center items-center w-full px-4 pt-20 sm:pt-16 md:mt-8 relative z-10">
+            <div class="hero-card rounded-[2rem] p-6 md:p-8 w-full max-w-4xl text-center mb-6">
+                <div class="inline-flex items-center gap-2 bg-indigo-100 text-indigo-800 px-4 py-1 rounded-full font-black text-sm mb-4 border border-indigo-300 animate-pulse">الإصدار اللانهائي ♾️</div>
+                <h1 class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 mb-4 text-center leading-tight drop-shadow-sm">
+                    أين الحلوى<br>يا سُكّر؟
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-600 mb-6 font-bold">العب، تعلم، واشترِ أصدقاء جدد!</p>
+                <div class="flex flex-wrap justify-center gap-3 mb-4">
+                    <span class="soft-chip">🎮 10 عوالم ممتعة</span>
+                    <span class="soft-chip">✨ مكافآت ذهبية</span>
+                    <span class="soft-chip">🎧 صوت عربي</span>
+                </div>
+            </div>
+
+            <div class="text-9xl md:text-[12rem] mb-10 animate-float drop-shadow-xl relative cursor-pointer hover:scale-105 transition-transform" onclick="playMarimba(800); playMarimba(1000,0.1); speakWord('أَنَا سُكَّر!'); event.stopPropagation();">
                 <span class="absolute -left-10 top-0 text-5xl animate-pulse pointer-events-none">🍬</span>
                 👶
                 <span class="absolute -right-10 bottom-10 text-5xl animate-bounce pointer-events-none">🎈</span>
             </div>
-            
-            <button id="start-btn" class="bg-gradient-to-b from-green-400 to-green-500 text-white text-3xl md:text-4xl font-black py-4 md:py-5 px-14 md:px-20 rounded-full shadow-[0_8px_0_rgb(34,197,94)] active:shadow-none active:translate-y-2 transition-all border-4 border-white mb-6" onclick="event.stopPropagation();">
+
+            <button id="start-btn" class="premium-button bg-gradient-to-b from-green-400 to-green-500 text-white text-3xl md:text-4xl font-black py-4 md:py-5 px-14 md:px-20 rounded-full shadow-[0_8px_0_rgb(34,197,94)] active:shadow-none active:translate-y-2 transition-all border-4 border-white mb-6" onclick="event.stopPropagation();">
                 البدء ▶️
             </button>
-            <div class="mt-2 text-center bg-white/90 rounded-2xl p-3 px-8 border border-gray-200 shadow-md">
+
+            <div class="mt-2 text-center glass-panel rounded-[1.5rem] p-3 px-8 border border-white/70 shadow-md">
                 <p class="text-sm md:text-base text-gray-500 font-bold mb-1">تصميم وبرمجة طلاب مركز</p>
                 <p class="text-blue-700 font-black md:text-xl">TS-GSM TECHNOLOGIE</p>
                 <p class="text-xs md:text-sm text-gray-400 mt-1">إشراف: م. حنيستر</p>
@@ -192,17 +351,20 @@
         </div>
     </div>
 
-    <!-- متجر الشخصيات (بدلاً من شاشة الاختيار البسيطة) -->
-    <div id="shop-screen" class="hidden absolute inset-0 flex-col items-center justify-start bg-gradient-to-b from-indigo-50 to-purple-100 z-35 transition-opacity duration-500 w-full h-full px-4 pt-10 md:pt-16 opacity-0 overflow-y-auto pb-10">
-        <div class="flex justify-between items-center w-full max-w-4xl mb-6">
-            <h2 class="text-4xl md:text-6xl font-black text-indigo-600 drop-shadow-sm">مَتْجَرُ الْأَصْدِقَاء 🛒</h2>
-            <div class="bg-white px-4 py-2 rounded-full shadow border-2 border-pink-200 font-black text-2xl text-pink-500">
-                <span id="shop-candy-count">0</span> 🍬
+    <!-- متجر الشخصيات -->
+    <div id="shop-screen" class="hidden absolute inset-0 flex-col items-center justify-start bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-100 z-35 transition-opacity duration-500 w-full h-full px-4 pt-24 sm:pt-20 md:pt-16 opacity-0 overflow-y-auto pb-10">
+        <div class="glass-panel rounded-[2rem] p-4 md:p-6 w-full max-w-4xl mb-6 border border-white/70">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-4xl md:text-6xl font-black text-indigo-600 drop-shadow-sm">مَتْجَرُ الْأَصْدِقَاء 🛒</h2>
+                    <p class="text-xl text-gray-600 font-bold mt-2">اخْتَرْ صَدِيقاً لِتَلْعَبَ مَعَهُ، أَوِ اشْتَرِ صَدِيقاً جَدِيداً!</p>
+                </div>
+                <div class="bg-white px-4 py-2 rounded-full shadow border-2 border-pink-200 font-black text-2xl text-pink-500">
+                    <span id="shop-candy-count">0</span> 🍬
+                </div>
             </div>
         </div>
-        
-        <p class="text-xl text-gray-600 font-bold mb-8 text-center bg-white/60 px-6 py-2 rounded-full">اخْتَرْ صَدِيقاً لِتَلْعَبَ مَعَهُ، أَوِ اشْتَرِ صَدِيقاً جَدِيداً!</p>
-        
+
         <div id="shop-items-container" class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl w-full">
             <!-- Shop items injected here -->
         </div>
@@ -234,6 +396,28 @@
             </div>
             <div id="mini-album" class="flex gap-2 bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-white items-center">
                 <span class="text-xl md:text-2xl ml-2 font-black text-pink-500" id="current-score-display">0</span>🍬
+            </div>
+        </div>
+
+        <div class="w-full max-w-4xl z-20 mt-3 px-2 sm:px-0">
+            <div class="glass-panel rounded-[1.5rem] p-2 sm:p-3 md:p-4 border border-white/70">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-3">
+                    <div>
+                        <div id="world-chip" class="inline-flex items-center gap-2 bg-white/80 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm md:text-base font-black text-indigo-700 shadow-sm whitespace-nowrap">
+                            🌟 العالم
+                        </div>
+                        <div id="world-hint" class="text-xs sm:text-sm md:text-base font-bold text-gray-600 mt-1">ابحث بتركيز ومرح</div>
+                    </div>
+                    <div class="w-full md:w-64">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-xs font-black text-gray-500">تقدم المرحلة</span>
+                            <span id="level-progress-text" class="text-xs font-black text-pink-500">1/3</span>
+                        </div>
+                        <div class="progress-track">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -357,7 +541,11 @@
             savedGolden: document.getElementById('saved-golden-count'),
             savedStickers: document.getElementById('saved-stickers-container'),
             currentScore: document.getElementById('current-score-display'),
-            liveBgContainer: document.getElementById('live-bg-container')
+            liveBgContainer: document.getElementById('live-bg-container'),
+            worldChip: document.getElementById('world-chip'),
+            worldHint: document.getElementById('world-hint'),
+            levelProgressText: document.getElementById('level-progress-text'),
+            progressFill: document.getElementById('progress-fill')
         };
 
         const praises = ['أَحْسَنْتَ!', 'عَبْقَرِي!', 'ذَكِيّ جِدّاً!', 'بَطَل!', 'رَائِع!'];
@@ -735,6 +923,18 @@
             DOM.currentScore.textContent = sessionScore;
         }
 
+        function updateHud() {
+            const world = worlds[currentWorldIndex] || worlds[0];
+            const levelNumber = currentLevelInWorld + 1;
+            const totalLevels = world.levelsNeeded;
+            const progressPercent = Math.min(100, Math.round((levelNumber / totalLevels) * 100));
+
+            DOM.worldChip.innerHTML = `<span class="ml-1">${world.icon}</span>${world.name}`;
+            DOM.worldHint.textContent = world.mechanic === 'shuffle' ? 'استخدم التركيز والذاكرة' : 'ابحث عن الحلوى بكل هدوء';
+            DOM.levelProgressText.textContent = `${levelNumber}/${totalLevels}`;
+            DOM.progressFill.style.width = `${progressPercent}%`;
+        }
+
         function startWorldTransition() {
             DOM.gameScreen.classList.add('hidden'); DOM.gameScreen.classList.remove('flex');
             const world = worlds[currentWorldIndex];
@@ -754,6 +954,7 @@
             
             startLiveBackground(world.bgEffect);
             updateMiniAlbum();
+            updateHud();
         }
 
         function showMessage(text, type = 'normal') {
@@ -783,6 +984,7 @@
             } else { DOM.candyJar.classList.add('hidden'); }
 
             showMessage(world.mechanic === 'shuffle' ? 'رَاقِبْ جَيِّداً...' : (world.isNight ? 'وَقْتُ النَّوْم..' : 'أَيْنَ الحَلْوَى؟'), world.isNight || world.isSpace ? 'night' : 'normal');
+            updateHud();
 
             let levelObjects = [...world.objects].sort(() => Math.random() - 0.5).slice(0, world.itemCount);
             const candyIndex = Math.floor(Math.random() * world.itemCount);
