@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html> -->
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -581,10 +581,39 @@
         const mascotPhrases = ['أَنَا أُحِبُّك!', 'هَيَّا نَلْعَب!', 'أَنْتَ ذَكِيّ!', 'تِيكِي تِيكِي!', 'أَنْتَ صَدِيقِي!'];
         
         let availableVoices = [];
+        let arabicVoiceReady = false;
+        let voiceNoticeShown = false;
+
+        function refreshVoices() {
+            if (!('speechSynthesis' in window)) return;
+            availableVoices = window.speechSynthesis.getVoices() || [];
+            arabicVoiceReady = availableVoices.some(v => (v.lang || '').toLowerCase().includes('ar'));
+        }
+
         if ('speechSynthesis' in window) {
-            const loadVoices = () => { availableVoices = window.speechSynthesis.getVoices(); };
-            loadVoices();
-            if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = loadVoices;
+            refreshVoices();
+            if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = refreshVoices;
+            // بعض المتصفحات (خاصة على الحاسوب) تُحمّل الأصوات متأخرة أو عبر الإنترنت — نعيد المحاولة عدة مرات
+            let voiceTries = 0;
+            const voicePoll = setInterval(() => {
+                refreshVoices(); voiceTries++;
+                if (arabicVoiceReady || voiceTries > 12) clearInterval(voicePoll);
+            }, 500);
+        }
+
+        // إشعار لطيف (للوالدين) عند غياب النطق العربي على الجهاز، مع إرشاد لتفعيله
+        function maybeShowVoiceNotice() {
+            if (voiceNoticeShown || arabicVoiceReady || !('speechSynthesis' in window)) return;
+            voiceNoticeShown = true;
+            const bar = document.createElement('div');
+            bar.id = 'voice-notice';
+            bar.style.cssText = 'position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:120;max-width:92%;width:440px;background:#fff;border:2px solid #fbbf24;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.18);padding:12px 14px;display:flex;align-items:center;gap:10px;font-family:Tajawal,sans-serif;font-weight:800;color:#374151;font-size:14px;text-align:right;';
+            bar.innerHTML = '<span style="font-size:24px">🔊</span>'
+                + '<span style="flex:1;line-height:1.5">النُّطْق العربي غير مُثبَّت على هذا الحاسوب. لِتفعيله: ثبّت «حزمة اللغة العربية» في نظام التشغيل. اللعبة تعمل بالكامل بالمؤثرات والكلمات المكتوبة.</span>'
+                + '<button style="background:#fbbf24;border:none;border-radius:10px;padding:8px 14px;font-weight:900;cursor:pointer;font-family:inherit" onclick="this.parentElement.remove()">حَسَناً</button>';
+            document.body.appendChild(bar);
+            // يختفي تلقائياً بعد مدة حتى لا يحجب أزرار اللعب
+            setTimeout(() => { if (bar.isConnected) bar.remove(); }, 12000);
         }
 
         // --- 10 عوالم متكاملة (مع إضافة عالم الديناصورات!) ---
@@ -744,6 +773,8 @@
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance('');
                 utterance.volume = 0; window.speechSynthesis.speak(utterance);
+                // فحص مؤجّل: بعد إتاحة وقت كافٍ لتحميل الأصوات، إن لم يوجد صوت عربي نعرض الإرشاد مرة واحدة
+                setTimeout(() => { refreshVoices(); maybeShowVoiceNotice(); }, 4000);
             }
         }
 
@@ -756,21 +787,23 @@
 
         function speakWord(text) {
             if (isMuted || !('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel(); 
+            window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ar'; utterance.rate = 0.85; utterance.pitch = 1.3; utterance.volume = 1;
-            
-            if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
-            let arabicVoices = availableVoices.filter(v => v.lang.toLowerCase().includes('ar'));
-            
+            utterance.lang = 'ar-SA'; utterance.rate = 0.85; utterance.pitch = 1.3; utterance.volume = 1;
+
+            if (!availableVoices || availableVoices.length === 0) refreshVoices();
+            const arabicVoices = availableVoices.filter(v => (v.lang || '').toLowerCase().includes('ar'));
+
             if (arabicVoices.length > 0) {
-                let bestVoice = arabicVoices.find(v => 
-                    v.name.includes('Premium') || v.name.includes('Majed') || v.name.includes('Tariq') || 
+                const bestVoice = arabicVoices.find(v =>
+                    v.name.includes('Premium') || v.name.includes('Majed') || v.name.includes('Tariq') ||
                     v.name.includes('Zeina') || v.name.includes('Laila') || v.name.includes('Google')
                 );
                 utterance.voice = bestVoice || arabicVoices[0];
+                window.speechSynthesis.speak(utterance);
             }
-            window.speechSynthesis.speak(utterance);
+            // لا يوجد صوت عربي على هذا الجهاز (شائع على الحاسوب): لا ننطق بصوت أجنبي مشوَّه.
+            // الإشعار الإرشادي يظهر عبر فحص مؤجّل في initAudio بعد إتاحة وقت كافٍ لتحميل الأصوات.
         }
 
         function playMarimba(freq, delay = 0) {
