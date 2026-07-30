@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>أين الحلوى يا سُكّر؟ - الإصدار المتكامل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --bg-color: #fdf2f8; --text-color: #1f2937; }
+        html, body {
+            height: 100%; height: 100dvh; margin: 0; padding: 0;
+            overflow: hidden; touch-action: manipulation;
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-color);
+            transition: background-color 1.5s ease-in-out;
+            -webkit-user-select: none; user-select: none;
+        }
+
+        /* Animation Keyframes */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .animate-float { animation: float 3s infinite ease-in-out; }
+        @keyframes wobble-gentle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
+        .animate-wobble-gentle { animation: wobble-gentle 0.4s ease-in-out; }
+        @keyframes pop-in { 0% { transform: scale(0.3); opacity: 0; } 70% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        .animate-pop { animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+        .cover-item {
+            position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background-color: white; border-radius: 22%; box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
+            border: 4px solid rgba(255,255,255,0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer; z-index: 20; text-align: center;
+        }
+
+        .item-emoji { font-size: clamp(2rem, 6vw, 4rem); line-height: 1.1; margin-bottom: 4px; }
+        .item-text { font-size: clamp(0.7rem, 2.5vw, 1.2rem); font-weight: 900; color: #374151; padding: 0 4px; }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center relative select-none bg-pink-50" id="main-body">
+
+    <div id="app" class="w-full h-full relative">
+        <div id="start-screen" class="absolute inset-0 flex flex-col items-center justify-center z-50">
+            <h1 class="text-4xl md:text-6xl font-black text-pink-500 mb-8 text-center">أين الحلوى يا سُكّر؟</h1>
+            <input type="text" id="child-name-input" placeholder="اسم الطفل..." class="mb-6 w-48 text-center py-2 rounded-full border-2 border-pink-200">
+            <button id="start-btn" class="bg-green-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition-transform">البدء ▶️</button>
+        </div>
+
+        <div id="game-screen" class="hidden flex-col items-center w-full h-full pt-10">
+            <div id="items-wrapper" class="relative w-full h-64 md:h-96 flex justify-center items-center">
+            </div>
+            <div id="sukkar-character" class="text-8xl mt-10 animate-float">👶</div>
+            <div id="message-board" class="mt-6 bg-white px-8 py-3 rounded-full font-bold text-xl shadow-md border-2 border-pink-100">أين الحلوى؟</div>
+        </div>
+    </div>
+
+    <script>
+        const DOM = {
+            startScreen: document.getElementById('start-screen'),
+            gameScreen: document.getElementById('game-screen'),
+            itemsWrapper: document.getElementById('items-wrapper'),
+            sukkar: document.getElementById('sukkar-character'),
+            message: document.getElementById('message-board'),
+            startBtn: document.getElementById('start-btn')
+        };
+
+        const worlds = [{
+            objects: [
+                { word: 'تُفَّاحَة', emoji: '🍎', bg: 'bg-red-100' },
+                { word: 'مَوْزَة', emoji: '🍌', bg: 'bg-yellow-100' },
+                { word: 'جَزَرَة', emoji: '🥕', bg: 'bg-orange-100' }
+            ]
+        }];
+
+        let currentWorldIndex = 0;
+        let isInputLocked = false;
+
+        function setupLevel() {
+            DOM.itemsWrapper.innerHTML = '';
+            const world = worlds[currentWorldIndex];
+            const items = [...world.objects].sort(() => Math.random() - 0.5);
+            const candyIdx = Math.floor(Math.random() * items.length);
+
+            const containerWidth = DOM.itemsWrapper.clientWidth;
+            const itemSize = Math.min(140, (containerWidth / items.length) - 20);
+            
+            items.forEach((obj, i) => {
+                const container = document.createElement('div');
+                container.className = 'cover-item ' + obj.bg;
+                container.style.width = `${itemSize}px`;
+                container.style.height = `${itemSize}px`;
+                container.style.position = 'relative'; // لضمان ظهور الـ Flex بشكل صحيح
+                container.style.margin = '10px';
+                
+                container.innerHTML = `<div class="item-emoji">${obj.emoji}</div><div class="item-text">${obj.word}</div>`;
+                
+                // تصحيح منطق الضغط: استخدام وظيفة مستقلة لكل عنصر
+                container.onclick = (e) => {
+                    e.stopPropagation();
+                    handleItem(i === candyIdx, container);
+                };
+                
+                DOM.itemsWrapper.appendChild(container);
+            });
+            DOM.gameScreen.classList.remove('hidden');
+        }
+
+        function handleItem(isCandy, el) {
+            if (isInputLocked) return;
+            if (isCandy) {
+                DOM.message.textContent = "أحسنت! وجدت الحلوى 🍬";
+                isInputLocked = true;
+                el.classList.add('animate-pulse');
+                setTimeout(() => {
+                    isInputLocked = false;
+                    setupLevel();
+                }, 1500);
+            } else {
+                DOM.message.textContent = "جرب مرة أخرى!";
+                el.classList.add('animate-wobble-gentle');
+                setTimeout(() => el.classList.remove('animate-wobble-gentle'), 500);
+            }
+        }
+
+        DOM.startBtn.addEventListener('click', () => {
+            DOM.startScreen.classList.add('hidden');
+            setupLevel();
+        });
+    </script>
+</body>
+</html>
+```
+
+### 💡 نصيحة أخيرة للمحترفين:
+إذا لم تظهر البطاقات بعد هذا الكود، فالمشكلة في **تخزين المتصفح المؤقت (Cache)**. قم بفتح اللعبة على حاسوبك، اضغط على زر `F12` في لوحة المفاتيح، ثم اضغط بيمين الفأرة على زر "تحديث الصفحة" (Refresh icon) واختر **"Empty Cache and Hard Reload"**. ستظهر اللعبة فوراً بشكلها الصحيح!
