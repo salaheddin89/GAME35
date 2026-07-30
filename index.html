@@ -327,7 +327,7 @@
                 </h1>
                 <p class="text-xl md:text-2xl text-gray-600 mb-6 font-bold">العب، تعلم، واشترِ أصدقاء جدد!</p>
                 <div class="flex flex-wrap justify-center gap-3 mb-4">
-                    <span class="soft-chip">🎮 10 عوالم ممتعة</span>
+                    <span class="soft-chip">🎮 13 عالماً ممتعاً</span>
                     <span class="soft-chip">✨ مكافآت ذهبية</span>
                     <span class="soft-chip">🎧 صوت عربي</span>
                 </div>
@@ -393,6 +393,7 @@
             <div class="flex gap-3">
                 <button onclick="location.reload(); event.stopPropagation();" class="bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-gray-100 text-2xl md:text-3xl hover:bg-red-50">🚪</button>
                 <button onclick="resetCurrentWorld(); event.stopPropagation();" class="bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-gray-100 text-2xl md:text-3xl hover:bg-blue-50">🔄</button>
+                <button onclick="openShopFromGame(); event.stopPropagation();" class="bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-gray-100 text-2xl md:text-3xl hover:bg-purple-50">🛒</button>
             </div>
             <div id="mini-album" class="flex gap-2 bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-white items-center">
                 <span class="text-xl md:text-2xl ml-2 font-black text-pink-500" id="current-score-display">0</span>🍬
@@ -453,8 +454,10 @@
         let hintTimeout;
         let pendingUrl = '';
         let earnedStickers = [];
-        let playerEmoji = '👶'; 
+        let playerEmoji = '👶';
         let bgInterval;
+        let currentItems = [];   // مرجع لعناصر المستوى الحالي (لإعادة التموضع والوصول بلوحة المفاتيح)
+        let resizeTimer;         // لتهدئة حدث تغيير الحجم
         
         // --- نظام الحفظ والمخزون ---
         let allTimeCandies = 0;
@@ -471,13 +474,14 @@
                     allTimeGolden = data.golden || 0;
                     allTimeStickers = data.stickers || [];
                     unlockedChars = data.unlockedChars || ['👦', '👧'];
+                    currentWorldIndex = data.worldProgress || 0;
                 }
             } catch(e) { console.warn("تعذر التحميل", e); }
         }
 
         function saveGameData() {
             try {
-                const data = { candies: allTimeCandies, golden: allTimeGolden, stickers: allTimeStickers, unlockedChars: unlockedChars };
+                const data = { candies: allTimeCandies, golden: allTimeGolden, stickers: allTimeStickers, unlockedChars: unlockedChars, worldProgress: currentWorldIndex };
                 localStorage.setItem('sukkarInfiniteData', JSON.stringify(data));
             } catch(e) { console.warn("تعذر الحفظ", e); }
         }
@@ -562,7 +566,7 @@
         const worlds = [
             {
                 id: 'shapes', name: 'الأشكال والألوان', icon: '🎨', bgColor: '#fdf4ff', env: '✨', bgEffect: 'none',
-                introTitle: 'المرحلة 1', introDesc: 'لنتعرف على الأشكال والألوان الجميلة!',
+                introDesc: 'لنتعرف على الأشكال والألوان الجميلة!',
                 levelsNeeded: 2, mechanic: 'simple', itemCount: 2, sticker: '🏅 بطل الأشكال',
                 objects: [
                     { word: 'دَائِرَة خَضْرَاء', audio: 'دَائِرَة خَضْرَاء', emoji: '🟢', bg: 'bg-white' },
@@ -572,8 +576,46 @@
                 ]
             },
             {
+                id: 'numbers', name: 'الأرقام', icon: '🔢', bgColor: '#eef2ff', env: '✨', bgEffect: 'none',
+                introDesc: 'هَيَّا نَعُدّ! ابْحَثْ عَنِ الحَلْوَى خَلْفَ الأَرْقَام!',
+                levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '🔢 بطل الأرقام',
+                objects: [
+                    { word: 'وَاحِد', audio: 'رَقْم وَاحِد', emoji: '1️⃣', bg: 'bg-white' },
+                    { word: 'اِثْنَان', audio: 'رَقْم اِثْنَان', emoji: '2️⃣', bg: 'bg-white' },
+                    { word: 'ثَلَاثَة', audio: 'رَقْم ثَلَاثَة', emoji: '3️⃣', bg: 'bg-white' },
+                    { word: 'أَرْبَعَة', audio: 'رَقْم أَرْبَعَة', emoji: '4️⃣', bg: 'bg-white' },
+                    { word: 'خَمْسَة', audio: 'رَقْم خَمْسَة', emoji: '5️⃣', bg: 'bg-white' },
+                    { word: 'سِتَّة', audio: 'رَقْم سِتَّة', emoji: '6️⃣', bg: 'bg-white' }
+                ]
+            },
+            {
+                id: 'letters', name: 'الحروف', icon: '🔤', bgColor: '#f0fdf4', env: '✨', bgEffect: 'none',
+                introDesc: 'تَعَلَّمِ الحُرُوف! أَيْنَ تَخْتَبِئُ الحَلْوَى؟',
+                levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '🔤 بطل الحروف',
+                objects: [
+                    { word: 'أَلِف', audio: 'حَرْفُ الأَلِف. أَ', emoji: 'أ', bg: 'bg-white' },
+                    { word: 'بَاء', audio: 'حَرْفُ البَاء. بَ', emoji: 'ب', bg: 'bg-white' },
+                    { word: 'تَاء', audio: 'حَرْفُ التَّاء. تَ', emoji: 'ت', bg: 'bg-white' },
+                    { word: 'جِيم', audio: 'حَرْفُ الجِيم. جَ', emoji: 'ج', bg: 'bg-white' },
+                    { word: 'دَال', audio: 'حَرْفُ الدَّال. دَ', emoji: 'د', bg: 'bg-white' },
+                    { word: 'رَاء', audio: 'حَرْفُ الرَّاء. رَ', emoji: 'ر', bg: 'bg-white' }
+                ]
+            },
+            {
+                id: 'emotions', name: 'المشاعر', icon: '😊', bgColor: '#fff7ed', env: '✨', bgEffect: 'none',
+                introDesc: 'مَا هَذَا الشُّعُور؟ ابْحَثْ عَنِ الحَلْوَى!',
+                levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '😊 خبير المشاعر',
+                objects: [
+                    { word: 'سَعِيد', audio: 'وَجْه سَعِيد', emoji: '😄', bg: 'bg-yellow-50' },
+                    { word: 'حَزِين', audio: 'وَجْه حَزِين', emoji: '😢', bg: 'bg-blue-50' },
+                    { word: 'غَاضِب', audio: 'وَجْه غَاضِب', emoji: '😠', bg: 'bg-red-50' },
+                    { word: 'مُتَفَاجِئ', audio: 'وَجْه مُتَفَاجِئ', emoji: '😲', bg: 'bg-purple-50' },
+                    { word: 'نَائِم', audio: 'وَجْه نَائِم', emoji: '😴', bg: 'bg-indigo-50' }
+                ]
+            },
+            {
                 id: 'farm', name: 'مزرعة الفواكه', icon: '🍎', bgColor: '#fdf2f8', env: '☀️', bgEffect: 'none',
-                introTitle: 'المرحلة 2', introDesc: 'الآن لنبحث عن الحلوى خلف الفواكه اللذيذة!',
+                introDesc: 'الآن لنبحث عن الحلوى خلف الفواكه اللذيذة!',
                 levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '🍎 بطل المزرعة',
                 objects: [
                     { word: 'تُفَّاحَة حَمْرَاء', audio: 'تُفَّاحَة حَمْرَاء', emoji: '🍎', bg: 'bg-red-50' },
@@ -585,7 +627,7 @@
             },
             {
                 id: 'toys', name: 'عالم الألعاب', icon: '🧸', bgColor: '#ffedd5', env: '🪁', bgEffect: 'none',
-                introTitle: 'المرحلة 3', introDesc: 'ألعابك المفضلة هنا.. ابحث خلفها!',
+                introDesc: 'ألعابك المفضلة هنا.. ابحث خلفها!',
                 levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '🪀 صديق الألعاب',
                 objects: [
                     { word: 'كُرَة مُلَوَّنَة', audio: 'كُرَة مُلَوَّنَة', emoji: '⚽', bg: 'bg-gray-100' },
@@ -596,7 +638,7 @@
             },
             {
                 id: 'animals', name: 'أصدقاء الغابة', icon: '🦁', bgColor: '#fffbeb', env: '🦋', bgEffect: 'none',
-                introTitle: 'المرحلة 4', introDesc: 'اسمع صوت الحيوان، وابحث عن الحلوى!',
+                introDesc: 'اسمع صوت الحيوان، وابحث عن الحلوى!',
                 levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '🐾 صديق الحيوانات',
                 objects: [
                     { word: 'قِطَّة لَطِيفَة', audio: 'مِيَاو... قِطَّة لَطِيفَة', emoji: '🐱', bg: 'bg-orange-50' },
@@ -607,7 +649,7 @@
             },
             {
                 id: 'transport', name: 'وسائل النقل', icon: '🚗', bgColor: '#e0f2fe', env: '☁️', bgEffect: 'none',
-                introTitle: 'المرحلة 5', introDesc: 'هيا نركب ونسافر! أين تختبئ الحلوى؟',
+                introDesc: 'هيا نركب ونسافر! أين تختبئ الحلوى؟',
                 levelsNeeded: 3, mechanic: 'shuffle', itemCount: 3, sticker: '✈️ كابتن ذكي',
                 objects: [
                     { word: 'سَيَّارَة حَمْرَاء', audio: 'بِيب بِيب... سَيَّارَة حَمْرَاء', emoji: '🚗', bg: 'bg-red-100' },
@@ -617,7 +659,7 @@
             },
             {
                 id: 'weather', name: 'حالة الطقس', icon: '🌈', bgColor: '#f0fdfa', env: '☀️', bgEffect: 'rain',
-                introTitle: 'المرحلة 6', introDesc: 'الجو يتغير! استعد للبحث في الطقس!',
+                introDesc: 'الجو يتغير! استعد للبحث في الطقس!',
                 levelsNeeded: 3, mechanic: 'shuffle', itemCount: 3, sticker: '☔ خبير الطقس',
                 objects: [
                     { word: 'شَمْس دَافِئَة', audio: 'شَمْس دَافِئَة', emoji: '☀️', bg: 'bg-yellow-100' },
@@ -628,7 +670,7 @@
             },
             {
                 id: 'space', name: 'الفضاء الخارجي', icon: '🚀', bgColor: '#170b3b', env: '🌍', isSpace: true, bgEffect: 'stars',
-                introTitle: 'المرحلة 7', introDesc: 'هيا نطير إلى الفضاء! الأشياء تتحرك بسرعة!',
+                introDesc: 'هيا نطير إلى الفضاء! الأشياء تتحرك بسرعة!',
                 levelsNeeded: 3, mechanic: 'shuffle', itemCount: 3, sticker: '🚀 رائد فضاء',
                 objects: [
                     { word: 'صَارُوخ فَضَائِي', audio: 'صَارُوخ فَضَائِي', emoji: '🚀', bg: 'bg-purple-900' },
@@ -639,7 +681,7 @@
             },
             {
                 id: 'sea', name: 'أعماق البحار', icon: '🐠', bgColor: '#ecfeff', env: '🫧', bgEffect: 'bubbles',
-                introTitle: 'المرحلة 8', introDesc: 'اغص في البحر، ركز جيداً في الفقاعات!',
+                introDesc: 'اغص في البحر، ركز جيداً في الفقاعات!',
                 levelsNeeded: 3, mechanic: 'shuffle', itemCount: 3, sticker: '⚓ غواص ماهر',
                 objects: [
                     { word: 'سَمَكَة زَرْقَاء', audio: 'سَمَكَة زَرْقَاء', emoji: '🐟', bg: 'bg-cyan-50' },
@@ -650,7 +692,7 @@
             },
             {
                 id: 'dino', name: 'عالم الديناصورات', icon: '🦖', bgColor: '#fef3c7', env: '🌋', bgEffect: 'none',
-                introTitle: 'المرحلة 9', introDesc: 'ديناصورات ضخمة! أين خبأت الحلوى؟',
+                introDesc: 'ديناصورات ضخمة! أين خبأت الحلوى؟',
                 levelsNeeded: 3, mechanic: 'shuffle', itemCount: 3, sticker: '🦴 مكتشف الديناصورات',
                 objects: [
                     { word: 'دِينَاصُور أَخْضَر', audio: 'رَار... دِينَاصُور أَخْضَر', emoji: '🦖', bg: 'bg-green-100' },
@@ -661,7 +703,7 @@
             },
             {
                 id: 'sleep', name: 'وقت النوم', icon: '🌙', bgColor: '#0f172a', env: '⭐', isNight: true, bgEffect: 'stars',
-                introTitle: 'المرحلة الأخيرة', introDesc: 'حان وقت الراحة والهدوء.. أين الحلوى؟',
+                introDesc: 'حان وقت الراحة والهدوء.. أين الحلوى؟',
                 levelsNeeded: 2, mechanic: 'simple', itemCount: 3, sticker: '😴 نوم الهناء',
                 objects: [
                     { word: 'وِسَادَة نَاعِمَة', audio: 'وِسَادَة نَاعِمَة', emoji: '🛌', bg: 'bg-slate-700' },
@@ -909,15 +951,41 @@
             const world = worlds[currentWorldIndex];
             
             if (currentLevelInWorld >= world.levelsNeeded) {
-                earnedStickers.push(world.sticker); 
-                allTimeStickers.push(world.sticker); saveGameData(); updateMiniAlbum();
-                
+                earnedStickers.push(world.sticker);
+                allTimeStickers.push(world.sticker); updateMiniAlbum();
+
                 currentLevelInWorld = 0; currentWorldIndex++;
-                if (currentWorldIndex >= worlds.length) { endGameCelebration(); } else { startWorldTransition(); }
+                if (currentWorldIndex >= worlds.length) {
+                    currentWorldIndex = 0; saveGameData(); // تصفير التقدم بعد إكمال كل العوالم
+                    endGameCelebration();
+                } else {
+                    saveGameData(); // حفظ التقدم الجديد ليُستأنف لاحقاً
+                    startWorldTransition();
+                }
             } else { setupLevel(); }
         });
 
         function resetCurrentWorld() { currentLevelInWorld = 0; setupLevel(); }
+
+        // فتح المتجر أثناء اللعب لتغيير الشخصية (يحافظ على التقدم الحالي)
+        function openShopFromGame() {
+            clearTimeout(hintTimeout);
+            DOM.gameScreen.classList.add('hidden'); DOM.gameScreen.classList.remove('flex');
+            DOM.shopScreen.classList.remove('hidden'); DOM.shopScreen.classList.add('flex');
+            renderShop();
+            void DOM.shopScreen.offsetWidth; DOM.shopScreen.classList.add('opacity-100');
+            playMarimba(600);
+        }
+
+        // دعم لوحة المفاتيح: الأرقام 1..N لاختيار العنصر حسب موضعه على الشاشة
+        document.addEventListener('keydown', (e) => {
+            if (DOM.gameScreen.classList.contains('hidden') || isInputLocked) return;
+            const n = parseInt(e.key, 10);
+            if (!isNaN(n) && n >= 1 && currentItems.length) {
+                const item = currentItems.find(it => it.currentPos === n - 1);
+                if (item) handleItemSelection(item, currentItems);
+            }
+        });
 
         function updateMiniAlbum() {
             DOM.currentScore.textContent = sessionScore;
@@ -944,7 +1012,8 @@
             if(world.isNight) document.body.classList.add('night-mode');
             if(world.isSpace) document.body.classList.add('space-mode');
 
-            DOM.stageTitle.textContent = world.introTitle; DOM.stageIcon.textContent = world.icon;
+            const stageLabel = (currentWorldIndex === worlds.length - 1) ? 'المرحلة الأخيرة' : `المرحلة ${currentWorldIndex + 1}`;
+            DOM.stageTitle.textContent = world.introTitle || stageLabel; DOM.stageIcon.textContent = world.icon;
             DOM.stageDesc.textContent = world.introDesc; DOM.stageTransition.classList.remove('hidden');
             void DOM.stageTransition.offsetWidth; DOM.stageTransition.style.opacity = '1';
             DOM.stageCard.classList.remove('scale-90'); DOM.stageCard.classList.add('scale-100');
@@ -970,6 +1039,30 @@
             setTimeout(() => { DOM.message.style.zIndex = -1; }, 300);
         }
 
+        // حساب أبعاد ومواضع العناصر حسب حجم الشاشة (قابل لإعادة الاستخدام عند تغيير الحجم)
+        function computeLayout(itemCount) {
+            const screenWidth = window.innerWidth; const isDesktop = screenWidth >= 768;
+            const availableWidth = Math.min(screenWidth - 40, isDesktop ? 900 : 600);
+            const maxItemSize = Math.floor((availableWidth / itemCount) - (isDesktop ? 30 : 15));
+            const itemSize = Math.min(maxItemSize, isDesktop ? 220 : 150);
+            const spacing = screenWidth < 400 ? 10 : (isDesktop ? 30 : 15);
+            const totalWidth = (itemSize * itemCount) + (spacing * (itemCount - 1));
+            const startX = (availableWidth - totalWidth) / 2;
+            return { availableWidth, itemSize, spacing, startX };
+        }
+
+        // إعادة تموضع العناصر الموجودة دون إعادة بناء المستوى (يحفظ مكان الحلوى)
+        function positionItems() {
+            if (!currentItems || currentItems.length === 0) return;
+            const layout = computeLayout(currentItems.length);
+            DOM.itemsWrapper.style.width = `${layout.availableWidth}px`;
+            currentItems.forEach(item => {
+                item.container.style.width = `${layout.itemSize}px`;
+                item.container.style.height = `${layout.itemSize}px`;
+                item.container.style.left = `${layout.startX + (item.currentPos * (layout.itemSize + layout.spacing))}px`;
+            });
+        }
+
         async function setupLevel() {
             isInputLocked = true; clearTimeout(hintTimeout);
             DOM.nextBtn.classList.add('hidden'); DOM.message.style.zIndex = 10;
@@ -991,16 +1084,9 @@
             
             const isGoldenCandyLevel = Math.random() < 0.2; 
 
-            const screenWidth = window.innerWidth; const isDesktop = screenWidth >= 768; 
-            const availableWidth = Math.min(screenWidth - 40, isDesktop ? 900 : 600); 
-            const maxItemSize = Math.floor((availableWidth / world.itemCount) - (isDesktop ? 30 : 15));
-            const itemSize = Math.min(maxItemSize, isDesktop ? 220 : 150); 
-            const spacing = screenWidth < 400 ? 10 : (isDesktop ? 30 : 15);
-            
-            const totalWidth = (itemSize * world.itemCount) + (spacing * (world.itemCount - 1));
-            const startX = (availableWidth - totalWidth) / 2;
-
-            DOM.itemsWrapper.style.width = `${availableWidth}px`; 
+            const layout = computeLayout(world.itemCount);
+            const { itemSize, spacing, startX } = layout;
+            DOM.itemsWrapper.style.width = `${layout.availableWidth}px`;
             const itemElements = [];
 
             for (let i = 0; i < world.itemCount; i++) {
@@ -1053,7 +1139,11 @@
                 }
             }
 
-            window.onresize = () => { if(!isInputLocked) setupLevel(); };
+            currentItems = itemElements;
+            window.onresize = () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(positionItems, 150);
+            };
 
             itemElements.forEach(item => {
                 const interact = (e) => { e.preventDefault(); e.stopPropagation(); handleItemSelection(item, itemElements); };
@@ -1187,7 +1277,8 @@
             const container = document.getElementById('final-screen-container');
             const balloonColors = ['🎈', '🎈', '🎈', '🎉', '🎊', '🎀'];
             
-            setInterval(() => {
+            const balloonInterval = setInterval(() => {
+                if (!document.body.contains(container)) { clearInterval(balloonInterval); return; }
                 const balloon = document.createElement('div');
                 balloon.className = 'absolute pop-balloon text-6xl md:text-8xl select-none';
                 balloon.textContent = balloonColors[Math.floor(Math.random() * balloonColors.length)];
