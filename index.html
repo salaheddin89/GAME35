@@ -181,8 +181,10 @@
         .space-mode .cover-item { background: linear-gradient(145deg, #2e1065, #4c1d95); border-color: #6d28d9; color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         .space-mode .item-text { color: #e0e7ff; }
 
+        /* عنصر السماء التفاعلي: نُقل إلى الزاوية السفلية اليسرى وخلف المحتوى حتى لا يتداخل مع الأزرار */
         #env-interactable {
-            position: absolute; top: 10px; right: 10px; font-size: 3.5rem; z-index: 5;
+            position: absolute; bottom: 12px; left: 12px; top: auto; right: auto;
+            font-size: 2.5rem; z-index: 1; opacity: 0.85;
             cursor: pointer; transition: transform 0.3s; -webkit-tap-highlight-color: transparent;
         }
         #env-interactable:active { transform: scale(0.8) rotate(15deg); }
@@ -248,11 +250,34 @@
         }
 
         @media (min-width: 768px) {
-            #env-interactable { top: 20px; right: 20px; font-size: 5rem; }
+            #env-interactable { bottom: 20px; left: 20px; font-size: 3.25rem; }
             .cover-item { border-width: 6px; }
             .top-buttons-container {
                 padding: 1.5rem;
             }
+        }
+
+        /* ===== تكيّف مع الشاشات القصيرة/الأفقية حتى لا يفيض المحتوى ===== */
+        @media (max-height: 760px) {
+            #sukkar-character { font-size: 4rem; }
+            #message-board { font-size: 1.5rem; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+            #next-btn { font-size: 1.5rem; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        }
+        @media (max-height: 560px) {
+            #sukkar-character { font-size: 2.75rem; }
+            #message-board { font-size: 1.15rem; }
+            #next-btn { font-size: 1.15rem; }
+            #env-interactable { font-size: 1.75rem; }
+        }
+        /* شاشات قصيرة جداً (هاتف أفقي): نضغط الرأس ونخفي التلميحات لتبقى منطقة اللعب واضحة */
+        @media (max-height: 480px) {
+            #game-screen { padding-top: 3rem !important; padding-bottom: 0.25rem !important; }
+            #world-hint, #progress-label { display: none; }
+            #world-panel { padding: 0.35rem 0.75rem !important; }
+            #sukkar-character { font-size: 2rem; }
+            #candy-jar { display: none !important; }
+            #message-board { font-size: 1rem; min-height: 0; padding: 0.4rem 1.5rem; }
+            #game-screen .relative.w-full.flex.justify-center { margin-top: 0.4rem !important; min-height: 44px !important; }
         }
     </style>
 </head>
@@ -384,12 +409,12 @@
     </div>
 
     <!-- شاشة اللعب -->
-    <div id="game-screen" class="hidden w-full max-w-6xl px-4 flex-col items-center justify-between h-full py-4 pb-8 md:pb-12 relative z-10">
-        
+    <div id="game-screen" class="hidden w-full max-w-6xl px-4 flex-col items-center justify-between h-full min-h-0 overflow-hidden pt-16 sm:pt-20 md:pt-24 pb-3 md:pb-6 relative z-10">
+
         <div id="live-bg-container" class="absolute inset-0 pointer-events-none overflow-hidden z-0"></div>
         <div id="env-interactable" class="animate-pulse-soft hidden" onclick="event.stopPropagation();">☀️</div>
 
-        <div class="w-full flex justify-between items-start z-20 md:mt-4">
+        <div class="w-full flex justify-between items-start z-20 shrink-0">
             <div class="flex gap-3">
                 <button onclick="location.reload(); event.stopPropagation();" class="bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-gray-100 text-2xl md:text-3xl hover:bg-red-50">🚪</button>
                 <button onclick="resetCurrentWorld(); event.stopPropagation();" class="bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-gray-100 text-2xl md:text-3xl hover:bg-blue-50">🔄</button>
@@ -400,8 +425,8 @@
             </div>
         </div>
 
-        <div class="w-full max-w-4xl z-20 mt-3 px-2 sm:px-0">
-            <div class="glass-panel rounded-[1.5rem] p-2 sm:p-3 md:p-4 border border-white/70">
+        <div class="w-full max-w-4xl z-20 mt-2 px-2 sm:px-0 shrink-0">
+            <div id="world-panel" class="glass-panel rounded-[1.5rem] p-2 sm:p-3 md:p-4 border border-white/70">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-3">
                     <div>
                         <div id="world-chip" class="inline-flex items-center gap-2 bg-white/80 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm md:text-base font-black text-indigo-700 shadow-sm whitespace-nowrap">
@@ -411,7 +436,7 @@
                     </div>
                     <div class="w-full md:w-64">
                         <div class="flex justify-between mb-1">
-                            <span class="text-xs font-black text-gray-500">تقدم المرحلة</span>
+                            <span id="progress-label" class="text-xs font-black text-gray-500">تقدم المرحلة</span>
                             <span id="level-progress-text" class="text-xs font-black text-pink-500">1/3</span>
                         </div>
                         <div class="progress-track">
@@ -422,7 +447,7 @@
             </div>
         </div>
 
-        <div class="flex-1 w-full flex flex-col justify-center items-center relative min-h-[300px] md:min-h-[400px]" id="play-area">
+        <div class="flex-1 w-full flex flex-col justify-center items-center relative min-h-0 my-2" id="play-area">
             <div id="items-wrapper" class="relative flex justify-center items-center w-full h-full z-10"></div>
         </div>
 
@@ -433,7 +458,7 @@
                 <div id="candy-jar" class="absolute -right-10 md:-right-16 bottom-0 text-4xl md:text-6xl hidden transition-all pointer-events-none">🫙</div>
             </div>
             
-            <div class="relative w-full flex justify-center mt-6 min-h-[70px] md:min-h-[90px] pointer-events-none">
+            <div class="relative w-full flex justify-center mt-3 md:mt-5 min-h-[60px] md:min-h-[80px] pointer-events-none">
                 <div id="message-board" class="absolute bg-white/95 text-gray-800 px-8 md:px-12 py-3 md:py-4 rounded-full text-2xl md:text-4xl font-black shadow-lg opacity-0 transition-all duration-300 border-2 border-gray-100 text-center whitespace-nowrap">
                     أين الحلوى؟
                 </div>
@@ -572,7 +597,7 @@
                     { word: 'دَائِرَة خَضْرَاء', audio: 'دَائِرَة خَضْرَاء', emoji: '🟢', bg: 'bg-white' },
                     { word: 'مُرَبَّع أَزْرَق', audio: 'مُرَبَّع أَزْرَق', emoji: '🟦', bg: 'bg-white' },
                     { word: 'مُثَلَّث أَحْمَر', audio: 'مُثَلَّث أَحْمَر', emoji: '🔺', bg: 'bg-white' },
-                    { word: 'قَلْب وَرْدِي', audio: 'قَلْب وَرْدِي', emoji: '🩷', bg: 'bg-white' }
+                    { word: 'قَلْب وَرْدِي', audio: 'قَلْب وَرْدِي', emoji: '💗', bg: 'bg-white' }
                 ]
             },
             {
@@ -915,7 +940,9 @@
                 btn.onclick = (e) => {
                     e.stopPropagation();
                     if (opt === answer) {
-                        closeParentalGate(); if(pendingUrl) window.open(pendingUrl, '_blank');
+                        const urlToOpen = pendingUrl;   // نلتقط الرابط قبل الإغلاق لأنه يُصفّر pendingUrl
+                        closeParentalGate();
+                        if (urlToOpen) window.open(urlToOpen, '_blank');
                     } else {
                         btn.classList.add('bg-red-200', 'text-red-800'); btn.textContent = 'خطأ';
                         triggerHaptic('light'); setTimeout(generateMathProblem, 800);
@@ -1043,11 +1070,16 @@
         function computeLayout(itemCount) {
             const screenWidth = window.innerWidth; const isDesktop = screenWidth >= 768;
             const availableWidth = Math.min(screenWidth - 40, isDesktop ? 900 : 600);
-            const maxItemSize = Math.floor((availableWidth / itemCount) - (isDesktop ? 30 : 15));
-            const itemSize = Math.min(maxItemSize, isDesktop ? 220 : 150);
             const spacing = screenWidth < 400 ? 10 : (isDesktop ? 30 : 15);
+            const maxByWidth = Math.floor((availableWidth / itemCount) - spacing);
+            // تقييد الحجم بارتفاع منطقة اللعب المتاح حتى لا يفيض المحتوى رأسياً
+            const playArea = document.getElementById('play-area');
+            const availableHeight = playArea ? playArea.clientHeight : window.innerHeight * 0.4;
+            const maxByHeight = Math.floor(availableHeight * 0.92);
+            const floor = window.innerHeight < 480 ? 54 : 70;
+            const itemSize = Math.max(floor, Math.min(maxByWidth, maxByHeight, isDesktop ? 220 : 150));
             const totalWidth = (itemSize * itemCount) + (spacing * (itemCount - 1));
-            const startX = (availableWidth - totalWidth) / 2;
+            const startX = Math.max(0, (availableWidth - totalWidth) / 2);
             return { availableWidth, itemSize, spacing, startX };
         }
 
