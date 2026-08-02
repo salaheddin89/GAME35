@@ -1,1403 +1,165 @@
-<!-- <!DOCTYPE html> -->
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>أين الحلوى يا سُكّر؟ - الإصدار اللانهائي</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-color: #fdf2f8;
-            --text-color: #1f2937;
-            --accent: #ff4fa3;
-            --accent-2: #7c3aed;
-            --surface: rgba(255,255,255,0.76);
-            --surface-strong: rgba(255,255,255,0.95);
-        }
-
-        html, body {
-            height: 100%; height: 100dvh; margin: 0; padding: 0;
-            overflow: hidden; touch-action: manipulation;
-            font-family: 'Tajawal', sans-serif;
-            background: linear-gradient(135deg, #fff7fb 0%, #f5f3ff 45%, #ecfeff 100%);
-            color: var(--text-color);
-            transition: background-color 1.5s ease-in-out;
-            -webkit-user-select: none; user-select: none;
-        }
-
-        body::before, body::after {
-            content: '';
-            position: fixed;
-            width: 24rem;
-            height: 24rem;
-            border-radius: 9999px;
-            filter: blur(90px);
-            opacity: 0.22;
-            pointer-events: none;
-            z-index: 0;
-            animation: drift 12s ease-in-out infinite alternate;
-        }
-
-        body::before {
-            background: #f472b6;
-            top: -6rem;
-            right: -6rem;
-        }
-
-        body::after {
-            background: #60a5fa;
-            bottom: -8rem;
-            left: -7rem;
-            animation-direction: alternate-reverse;
-        }
-
-        @keyframes drift {
-            0% { transform: translate3d(0, 0, 0) scale(1); }
-            100% { transform: translate3d(20px, -30px, 0) scale(1.08); }
-        }
-
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .animate-float { animation: float 3s infinite ease-in-out; }
-
-        @keyframes wobble-gentle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
-        .animate-wobble-gentle { animation: wobble-gentle 0.4s ease-in-out; }
-
-        @keyframes pop-in { 0% { transform: scale(0.3); opacity: 0; } 70% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-        .animate-pop { animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-
-        @keyframes pulse-soft { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .animate-pulse-soft { animation: pulse-soft 2s infinite ease-in-out; }
-
-        .clouds-bg {
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.3"><text y="50" font-size="20">☁️</text></svg>');
-            background-size: 100px 100px;
-            animation: scrollClouds 20s linear infinite;
-        }
-        @keyframes scrollClouds { from { background-position: 0 0; } to { background-position: 100px 100px; } }
-
-        .glass-panel {
-            background: var(--surface);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.7);
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
-        }
-
-        .hero-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.82));
-            border: 1px solid rgba(255,255,255,0.9);
-            box-shadow: 0 30px 60px rgba(139, 92, 246, 0.16);
-        }
-
-        .soft-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            background: rgba(255,255,255,0.8);
-            border: 1px solid rgba(255,255,255,0.9);
-            border-radius: 9999px;
-            padding: 0.45rem 0.8rem;
-            font-weight: 800;
-            color: #6d28d9;
-            box-shadow: 0 8px 18px rgba(15,23,42,0.06);
-        }
-
-        .premium-button {
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 24px rgba(74, 222, 128, 0.24);
-        }
-
-        .premium-button::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-            transform: translateX(-120%);
-            transition: transform 0.6s ease;
-        }
-
-        .premium-button:hover::after {
-            transform: translateX(120%);
-        }
-
-        .cover-item {
-            position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,252,0.95));
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,0.8);
-            border: 4px solid rgba(255,255,255,0.95);
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s, box-shadow 0.3s;
-            cursor: pointer; z-index: 20; -webkit-tap-highlight-color: transparent;
-            text-align: center; overflow: hidden;
-        }
-
-        .cover-item::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at top left, rgba(255,255,255,0.5), transparent 55%);
-            pointer-events: none;
-        }
-
-        .cover-item:active { transform: scale(0.92); box-shadow: 0 8px 18px rgba(0,0,0,0.12); }
-        .item-emoji { font-size: clamp(2.5rem, 8vw, 6rem); line-height: 1.1; margin-bottom: 8px; }
-        .item-text { font-size: clamp(0.9rem, 3.5vw, 1.5rem); font-weight: 900; color: #374151; padding: 0 8px; line-height: 1.3; }
-
-        .hidden-content {
-            position: absolute; inset: 0; display: flex; justify-content: center; align-items: center;
-            font-size: clamp(3rem, 10vw, 7rem); z-index: 10; opacity: 0; transform: scale(0.5);
-            transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .shuffling { transition: left 1.2s ease-in-out, top 1.2s ease-in-out; pointer-events: none; }
-        .modal-glass { backdrop-filter: blur(14px); background-color: rgba(255, 255, 255, 0.84); }
-
-        .progress-track {
-            position: relative;
-            height: 0.7rem;
-            width: 100%;
-            border-radius: 9999px;
-            background: rgba(226, 232, 240, 0.9);
-            overflow: hidden;
-            box-shadow: inset 0 1px 3px rgba(15,23,42,0.12);
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            border-radius: inherit;
-            background: linear-gradient(90deg, #fb7185 0%, #8b5cf6 100%);
-            transition: width 0.4s ease;
-        }
-
-        .night-mode { background-color: #0f172a !important; color: #f8fafc !important; }
-        .night-mode .cover-item { background: linear-gradient(145deg, #1e293b, #334155); border-color: #475569; color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.35); }
-        .night-mode .item-text { color: #f1f5f9; }
-
-        .space-mode { background-color: #170b3b !important; color: #f8fafc !important; }
-        .space-mode .cover-item { background: linear-gradient(145deg, #2e1065, #4c1d95); border-color: #6d28d9; color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .space-mode .item-text { color: #e0e7ff; }
-
-        /* عنصر السماء التفاعلي: نُقل إلى الزاوية السفلية اليسرى وخلف المحتوى حتى لا يتداخل مع الأزرار */
-        #env-interactable {
-            position: absolute; bottom: 12px; left: 12px; top: auto; right: auto;
-            font-size: 2.5rem; z-index: 1; opacity: 0.85;
-            cursor: pointer; transition: transform 0.3s; -webkit-tap-highlight-color: transparent;
-        }
-        #env-interactable:active { transform: scale(0.8) rotate(15deg); }
-
-        .pop-balloon { cursor: pointer; transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
-        .pop-balloon:active { transform: scale(1.2); }
-
-        .magic-sparkle {
-            position: absolute; pointer-events: none; z-index: 9999;
-            font-size: 1.5rem; animation: sparkleAnim 0.8s ease-out forwards;
-        }
-        @keyframes sparkleAnim {
-            0% { transform: scale(0) rotate(0deg); opacity: 1; }
-            100% { transform: scale(1.5) rotate(90deg) translateY(-20px); opacity: 0; }
-        }
-
-        .env-particle { position: absolute; pointer-events: none; z-index: 1; opacity: 0.5; }
-        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 50% { opacity: 0.6; } 100% { transform: translateY(-20vh) scale(1.5); opacity: 0; } }
-        @keyframes floatDown { 0% { transform: translateY(-10vh) scale(0.8); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(100vh) scale(1.2); opacity: 0; } }
-        @keyframes floatSide { 0% { transform: translateX(100vw) scale(0.5); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateX(-20vw) scale(1.2); opacity: 0; } }
-
-        .golden-glow {
-            filter: drop-shadow(0 0 15px rgba(250, 204, 21, 0.9));
-            animation: pulse-soft 1s infinite alternate !important;
-        }
-
-        .shop-item { transition: all 0.3s ease; }
-        .shop-item.locked { filter: grayscale(100%) opacity(0.6); }
-        .shop-item.locked:hover { filter: grayscale(50%) opacity(1); }
-
-        /* Responsive button layout */
-        .top-buttons-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            padding: 0.75rem 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            pointer-events: none;
-            gap: 0.35rem;
-        }
-
-        .top-buttons-container > div {
-            pointer-events: auto;
-        }
-
-        .top-left-buttons {
-            display: flex;
-            gap: 0.35rem;
-        }
-
-        @media (min-width: 640px) {
-            .top-buttons-container {
-                padding: 1rem 1.5rem;
-                gap: 0.75rem;
-            }
-            .top-left-buttons {
-                gap: 0.75rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            #env-interactable { bottom: 20px; left: 20px; font-size: 3.25rem; }
-            .cover-item { border-width: 6px; }
-            .top-buttons-container {
-                padding: 1.5rem;
-            }
-        }
-
-        /* ===== تكيّف مع الشاشات القصيرة/الأفقية حتى لا يفيض المحتوى ===== */
-        @media (max-height: 760px) {
-            #sukkar-character { font-size: 4rem; }
-            #message-board { font-size: 1.5rem; padding-top: 0.5rem; padding-bottom: 0.5rem; }
-            #next-btn { font-size: 1.5rem; padding-top: 0.5rem; padding-bottom: 0.5rem; }
-        }
-        @media (max-height: 560px) {
-            #sukkar-character { font-size: 2.75rem; }
-            #message-board { font-size: 1.15rem; }
-            #next-btn { font-size: 1.15rem; }
-            #env-interactable { font-size: 1.75rem; }
-        }
-        /* شاشات قصيرة جداً (هاتف أفقي): نضغط الرأس ونخفي التلميحات لتبقى منطقة اللعب واضحة */
-        @media (max-height: 480px) {
-            #game-screen { padding-top: 3rem !important; padding-bottom: 0.25rem !important; }
-            #world-hint, #progress-label { display: none; }
-            #world-panel { padding: 0.35rem 0.75rem !important; }
-            #sukkar-character { font-size: 2rem; }
-            #candy-jar { display: none !important; }
-            #message-board { font-size: 1rem; min-height: 0; padding: 0.4rem 1.5rem; }
-            #game-screen .relative.w-full.flex.justify-center { margin-top: 0.4rem !important; min-height: 44px !important; }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#6c5ce7">
+  <meta name="description" content="لعبة عربية تعليمية خفيفة للأطفال من سنة إلى أربع سنوات">
+  <title>عالم سُكّر الصغير</title>
+  <style>
+    :root{--ink:#27324a;--purple:#6c5ce7;--pink:#ff6fae;--yellow:#ffd93d;--green:#49c98b;--card:#fff;--shadow:0 10px 0 rgba(55,48,110,.13),0 18px 35px rgba(55,48,110,.12)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:"Tahoma","Arial",sans-serif;color:var(--ink);background:#eff8ff;user-select:none;touch-action:manipulation}
+    button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
+    button:focus-visible{outline:5px solid #ff9f1c;outline-offset:4px}
+    .screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;overflow:auto;padding:max(16px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));background:linear-gradient(155deg,#eaf9ff,#fff2f8 52%,#f1efff)}
+    .hidden{display:none!important}.center{justify-content:center}.panel{width:min(920px,100%);background:#ffffffd9;border:3px solid #fff;border-radius:32px;box-shadow:var(--shadow);padding:clamp(18px,4vw,38px);text-align:center;backdrop-filter:blur(8px)}
+    h1{font-size:clamp(2.3rem,8vw,5.4rem);margin:.1em 0;color:var(--purple);line-height:1.08}h2{font-size:clamp(1.6rem,5vw,3rem);margin:.25em 0}.sub{font-size:clamp(1rem,3vw,1.35rem);font-weight:700;color:#67728c;line-height:1.7}
+    .mascot{font-size:clamp(5rem,18vw,10rem);display:inline-block;animation:float 2.4s ease-in-out infinite;filter:drop-shadow(0 12px 8px #7556aa30)}
+    .primary{min-height:68px;padding:14px 34px;border-radius:24px;background:linear-gradient(#60db9e,#35bb79);color:#fff;font-size:clamp(1.35rem,4vw,2rem);font-weight:900;box-shadow:0 8px 0 #269566;margin:8px}.primary:active,.round:active,.choice:active{transform:translateY(5px);box-shadow:0 3px 0 #269566}
+    .secondary{min-height:58px;padding:10px 22px;border:3px solid #ddd8ff;background:#fff;border-radius:20px;font-weight:900;font-size:1.1rem;margin:6px}.age-row,.actions,.badges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}.choice{min-width:140px;min-height:84px;border:4px solid #eeeaff;border-radius:24px;background:#fff;font-weight:900;font-size:1.25rem;box-shadow:0 7px 0 #d9d2ff}.choice.selected{border-color:var(--purple);background:#f1efff;color:#5140c8}
+    .badge{background:#fff;border-radius:99px;padding:9px 14px;font-weight:900;box-shadow:0 5px 14px #53608018}
+    .topbar{width:min(1000px,100%);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;z-index:2}.round{width:54px;height:54px;border-radius:50%;background:#fff;font-size:1.5rem;box-shadow:0 5px 0 #dce3ef}.progress{height:15px;background:#fff;border-radius:99px;overflow:hidden;border:2px solid #fff;box-shadow:inset 0 2px 5px #75819a30}.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--yellow));border-radius:inherit;transition:width .5s}
+    #game{justify-content:space-between;overflow:hidden}.lesson{width:min(900px,100%);text-align:center;z-index:2}.world-title{font-size:clamp(.9rem,2.6vw,1.2rem);font-weight:900;color:#6556ca}.prompt{font-size:clamp(1.5rem,5vw,3rem);font-weight:900;margin:10px 0 4px;min-height:1.3em}.say{background:#fff3bf;border-radius:99px;padding:6px 14px;font-weight:800;display:inline-block}
+    .playarea{width:min(960px,100%);flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}.cards{width:100%;display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:clamp(10px,2.4vw,24px);align-items:stretch}.card{min-height:clamp(120px,26vh,250px);background:#fff;border:5px solid #fff;border-radius:clamp(22px,4vw,36px);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;position:relative;transition:transform .18s,opacity .25s}.card .emoji{font-size:clamp(3.4rem,12vw,8rem);line-height:1.1}.card .label{font-weight:900;font-size:clamp(.85rem,3vw,1.35rem);margin-top:8px}.card.wrong{animation:wobble .38s}.card.correct{animation:pop .55s;border-color:#6ee7a8}.dots{font-size:clamp(1.8rem,6vw,3.7rem);line-height:1.2;letter-spacing:3px}.color-dot{width:clamp(72px,16vw,140px);aspect-ratio:1;border-radius:50%;border:7px solid #fff;box-shadow:0 7px 18px #44506630}.small{transform:scale(.68)}
+    .feedback{min-height:70px;display:flex;align-items:center;justify-content:center;font-size:clamp(1.3rem,4vw,2rem);font-weight:900}.stars{font-size:1.6rem;letter-spacing:3px}.toast{position:fixed;inset:auto 50% 22px auto;transform:translateX(50%);background:#26324be8;color:#fff;padding:12px 22px;border-radius:18px;font-weight:900;z-index:20;animation:rise .3s}
+    .worlds{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}.world{padding:16px 8px;border-radius:24px;background:#fff;border:3px solid #eeeaff;min-height:128px;font-weight:900}.world span{display:block;font-size:3rem}.world.locked{filter:grayscale(1);opacity:.48}.world.done{border-color:#65d99d;background:#effff6}
+    .celebrate{font-size:clamp(4rem,15vw,9rem);animation:pop .7s}.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden}.confetti i{position:absolute;top:-40px;font-style:normal;animation:fall 2.5s linear forwards}
+    .parent-box{max-width:620px;text-align:right}.parent-box label{font-weight:900;display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #eee}.switch{width:58px;height:34px;border-radius:30px;background:#cbd5e1;padding:4px}.switch i{display:block;width:26px;height:26px;border-radius:50%;background:#fff;transition:.2s}.switch.on{background:#49c98b}.switch.on i{transform:translateX(-24px)}
+    .corner-hat{position:fixed;top:max(14px,env(safe-area-inset-top));left:max(14px,env(safe-area-inset-left));z-index:50;width:58px;height:58px;border-radius:50%;background:#fff;border:3px solid #ffd93d;font-size:1.75rem;box-shadow:0 6px 0 #e5b927}.corner-hat:after{content:"";position:absolute;width:13px;height:13px;border-radius:50%;background:#ff5d73;top:-3px;right:-2px;animation:pop 1.4s infinite}.corner-hat:active{transform:translateY(4px);box-shadow:0 2px 0 #e5b927}
+    .modal{position:fixed;inset:0;z-index:100;background:#26324b99;display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(7px)}.gate{width:min(430px,100%);background:#fff;border-radius:30px;padding:28px;text-align:center;box-shadow:0 25px 70px #18203555}.math{direction:ltr;font-size:2.4rem;font-weight:900;color:var(--purple);background:#f1efff;border-radius:20px;padding:14px;margin:16px 0}.math-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.math-options button{min-height:65px;border-radius:18px;background:#eaf9ff;border:3px solid #ccecff;font-size:1.5rem;font-weight:900}
+    .shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:13px;margin:18px 0}.friend{background:#fff;border:3px solid #eeeaff;border-radius:25px;padding:15px 8px;font-weight:900;box-shadow:0 6px 0 #ded9fa}.friend .face{font-size:4.4rem;display:block}.friend.active{border-color:#49c98b;background:#effff6}.friend.locked{background:#f8f7fc}.wallet{display:inline-flex;gap:8px;background:#fff3bf;padding:10px 18px;border-radius:99px;font-size:1.2rem;font-weight:900}.game-friend{position:absolute;right:clamp(8px,2vw,24px);bottom:2px;font-size:clamp(2.8rem,8vw,5rem);filter:drop-shadow(0 8px 5px #39435d33);transition:.25s}.game-friend.cheer{animation:pop .55s}
+    @keyframes float{50%{transform:translateY(-10px)}}@keyframes wobble{25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}@keyframes pop{50%{transform:scale(1.13)}}@keyframes rise{from{opacity:0;transform:translate(50%,15px)}}@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+    .profile-fields{display:grid;gap:13px;max-width:560px;margin:16px auto}.name-input{width:100%;min-height:64px;border:4px solid #e6e1ff;border-radius:21px;padding:10px 18px;text-align:center;font:900 1.35rem Tahoma,Arial,sans-serif;color:var(--ink);background:#fff;outline:0;user-select:text}.name-input:focus{border-color:var(--purple);box-shadow:0 0 0 5px #6c5ce722}.gender-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.gender{min-height:105px;border:4px solid #eeeaff;border-radius:24px;background:#fff;font-size:1.2rem;font-weight:900}.gender span{font-size:3.4rem;display:block}.gender.selected{border-color:var(--purple);background:#f1efff;color:#5140c8}.hello{font-weight:900;color:#6556ca;min-height:1.5em}.privacy-note{font-size:.8rem;color:#7d879d;font-weight:700}
+    @media(max-width:560px){.panel{border-radius:25px}.cards{gap:9px}.card{border-width:3px}.topbar{grid-template-columns:auto 1fr auto}.round{width:47px;height:47px}.feedback{min-height:52px}.worlds{grid-template-columns:repeat(2,1fr)}}
+    @media(max-height:620px) and (orientation:landscape){.screen{padding:8px 14px}.lesson .say{display:none}.prompt{margin:2px}.card{min-height:45vh}.card .emoji{font-size:clamp(3rem,12vh,6rem)}.feedback{min-height:42px}.topbar{height:48px}.round{width:42px;height:42px}}
+    .reduce-motion *,.reduce-motion *:before,.reduce-motion *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
 </head>
-<body class="flex flex-col items-center justify-center relative select-none" onclick="createMagicSparkle(event)" ontouchstart="createMagicSparkle(event)">
-
-    <!-- نافذة بوابة الآباء -->
-    <div id="parental-gate" class="hidden absolute inset-0 z-[100] modal-glass flex-col items-center justify-center w-full h-full px-4 opacity-0 transition-opacity duration-300" onclick="event.stopPropagation()">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl text-center border-4 border-red-300 max-w-sm w-full animate-pop">
-            <div class="text-6xl mb-2">🔒</div>
-            <h2 class="text-2xl font-black text-gray-800 mb-2">للآباء فقط</h2>
-            <p class="text-gray-500 font-bold mb-6">يرجى حل المسألة لفتح الرابط</p>
-            <div id="math-problem" class="text-4xl font-black text-blue-600 mb-6 bg-blue-50 p-4 rounded-xl border border-blue-100 dir-ltr text-center" style="direction: ltr;"></div>
-            <div id="math-options" class="flex justify-center gap-3 mb-4 dir-ltr" style="direction: ltr;"></div>
-            <button onclick="closeParentalGate()" class="mt-4 text-gray-400 font-bold hover:text-gray-600 text-lg">إلغاء</button>
-        </div>
-    </div>
-
-    <!-- أزرار الواجهة الرئيسية -->
-    <div class="top-buttons-container">
-        <div class="top-left-buttons">
-            <div onclick="requestLinkOpen('https://ts-gsm.dz'); event.stopPropagation();" class="bg-white/90 backdrop-blur border-2 border-yellow-400 p-2 md:p-3 rounded-full shadow-lg cursor-pointer hover:scale-105 transition-transform group relative">
-                <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-ping opacity-75"></div>
-                <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></div>
-                <span class="text-2xl md:text-3xl block group-hover:animate-bounce">🎓</span>
-            </div>
-            <div id="trophy-btn" class="bg-white/90 backdrop-blur border-2 border-orange-400 p-2 md:p-3 rounded-full shadow-lg cursor-pointer hover:scale-105 transition-transform text-2xl md:text-3xl" onclick="showTrophyRoom(); event.stopPropagation();">
-                🏆
-            </div>
-        </div>
-        <div id="mute-btn" class="bg-white/90 backdrop-blur border-2 border-gray-200 p-2 md:p-3 rounded-full shadow-md cursor-pointer hover:scale-105 transition-transform text-2xl md:text-3xl" onclick="event.stopPropagation();">
-            🔊
-        </div>
-    </div>
-
-    <!-- غرفة الإنجازات (Trophy Room) -->
-    <div id="trophy-room" class="hidden absolute inset-0 z-[60] bg-gradient-to-b from-yellow-50 to-orange-100 flex-col items-center justify-center w-full h-full px-4 opacity-0 transition-opacity duration-300">
-        <h2 class="text-4xl md:text-6xl font-black text-orange-600 mb-6 drop-shadow-sm animate-bounce">غُرْفَةُ الْأَبْطَال 🏆</h2>
-        
-        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border-4 border-orange-300 max-w-lg w-full text-center relative mb-8">
-            <h3 class="text-2xl font-bold text-gray-700 mb-4">إِجْمَالِي الْحَلْوَى</h3>
-            <div class="flex justify-center items-center gap-6 mb-6 border-b-2 pb-6">
-                <div>
-                    <div class="text-5xl md:text-6xl mb-1">🍬</div>
-                    <div class="text-3xl text-pink-500 font-black" id="saved-candies-count">0</div>
-                    <div class="text-sm font-bold text-gray-500">عادية</div>
-                </div>
-                <div class="border-r-2 h-16 border-gray-200"></div>
-                <div>
-                    <div class="text-5xl md:text-6xl mb-1 golden-glow">🍬✨</div>
-                    <div class="text-3xl text-yellow-500 font-black" id="saved-golden-count">0</div>
-                    <div class="text-sm font-bold text-gray-500">ذهبية نادرة</div>
-                </div>
-            </div>
-            
-            <h3 class="text-2xl font-bold text-gray-700 mb-4">أَوْسِمَةُ الْبَطَل</h3>
-            <div id="saved-stickers-container" class="flex flex-wrap justify-center gap-3 max-h-[30vh] overflow-y-auto">
-                <!-- Stickers -->
-            </div>
-        </div>
-        <button onclick="closeTrophyRoom()" class="bg-orange-500 hover:bg-orange-600 text-white text-2xl font-black py-3 px-12 rounded-full shadow-[0_6px_0_rgb(194,65,12)] active:shadow-none active:translate-y-1 transition-all border-2 border-white z-10">
-            رُجُوع ↩️
-        </button>
-    </div>
-
-    <!-- شاشة البداية -->
-    <div id="start-screen" class="absolute inset-0 flex flex-col items-center justify-start overflow-y-auto bg-gradient-to-b from-blue-50 to-pink-50 clouds-bg z-40 transition-opacity duration-500 w-full h-full">
-        <div class="my-auto flex flex-col justify-center items-center w-full px-4 pt-24 pb-10 relative z-10">
-            <div class="hero-card rounded-[2rem] p-6 md:p-8 w-full max-w-4xl text-center mb-6">
-                <div class="inline-flex items-center gap-2 bg-indigo-100 text-indigo-800 px-4 py-1 rounded-full font-black text-sm mb-4 border border-indigo-300 animate-pulse">الإصدار اللانهائي ♾️</div>
-                <h1 class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 mb-4 text-center leading-tight drop-shadow-sm">
-                    أين الحلوى<br>يا سُكّر؟
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-600 mb-6 font-bold">العب، تعلم، واشترِ أصدقاء جدد!</p>
-                <div class="flex flex-wrap justify-center gap-3 mb-4">
-                    <span class="soft-chip">🎮 13 عالماً ممتعاً</span>
-                    <span class="soft-chip">✨ مكافآت ذهبية</span>
-                    <span class="soft-chip">🎧 صوت عربي</span>
-                </div>
-            </div>
-
-            <div class="text-9xl md:text-[12rem] mb-10 animate-float drop-shadow-xl relative cursor-pointer hover:scale-105 transition-transform" onclick="playMarimba(800); playMarimba(1000,0.1); speakWord('أَنَا سُكَّر!'); event.stopPropagation();">
-                <span class="absolute -left-10 top-0 text-5xl animate-pulse pointer-events-none">🍬</span>
-                👶
-                <span class="absolute -right-10 bottom-10 text-5xl animate-bounce pointer-events-none">🎈</span>
-            </div>
-
-            <button id="start-btn" class="premium-button bg-gradient-to-b from-green-400 to-green-500 text-white text-3xl md:text-4xl font-black py-4 md:py-5 px-14 md:px-20 rounded-full shadow-[0_8px_0_rgb(34,197,94)] active:shadow-none active:translate-y-2 transition-all border-4 border-white mb-6" onclick="event.stopPropagation();">
-                البدء ▶️
-            </button>
-
-            <div class="mt-2 text-center glass-panel rounded-[1.5rem] p-3 px-8 border border-white/70 shadow-md">
-                <p class="text-sm md:text-base text-gray-500 font-bold mb-1">تصميم وبرمجة طلاب مركز</p>
-                <p class="text-blue-700 font-black md:text-xl">TS-GSM TECHNOLOGIE</p>
-                <p class="text-xs md:text-sm text-gray-400 mt-1">إشراف: م. حنيستر</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- متجر الشخصيات -->
-    <div id="shop-screen" class="hidden absolute inset-0 flex-col items-center justify-start bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-100 z-35 transition-opacity duration-500 w-full h-full px-4 pt-24 sm:pt-20 md:pt-16 opacity-0 overflow-y-auto pb-10">
-        <div class="glass-panel rounded-[2rem] p-4 md:p-6 w-full max-w-4xl mb-6 border border-white/70">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 class="text-4xl md:text-6xl font-black text-indigo-600 drop-shadow-sm">مَتْجَرُ الْأَصْدِقَاء 🛒</h2>
-                    <p class="text-xl text-gray-600 font-bold mt-2">اخْتَرْ صَدِيقاً لِتَلْعَبَ مَعَهُ، أَوِ اشْتَرِ صَدِيقاً جَدِيداً!</p>
-                </div>
-                <div class="bg-white px-4 py-2 rounded-full shadow border-2 border-pink-200 font-black text-2xl text-pink-500">
-                    <span id="shop-candy-count">0</span> 🍬
-                </div>
-            </div>
-        </div>
-
-        <div id="shop-items-container" class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl w-full">
-            <!-- Shop items injected here -->
-        </div>
-    </div>
-
-    <!-- شاشة إعلان المرحلة -->
-    <div id="stage-transition" class="hidden absolute inset-0 flex flex-col items-center justify-center modal-glass z-30 transition-opacity duration-500 opacity-0 w-full h-full px-4">
-        <div class="bg-white p-8 md:p-12 rounded-3xl shadow-2xl text-center border-4 border-yellow-400 transform transition-transform scale-90 w-full max-w-md relative overflow-hidden" id="stage-card">
-            <div class="absolute top-0 right-0 w-full h-3 bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300"></div>
-            <h2 id="stage-title" class="text-3xl md:text-5xl font-black text-purple-600 mb-4 mt-2">...</h2>
-            <div id="stage-icon" class="text-8xl md:text-9xl mb-6 animate-bounce drop-shadow-md"></div>
-            <p id="stage-desc" class="text-xl md:text-2xl text-gray-600 font-bold mb-8">...</p>
-            <button id="continue-stage-btn" class="bg-yellow-400 text-yellow-900 text-2xl md:text-3xl font-black py-4 px-12 rounded-full shadow-[0_6px_0_rgb(202,138,4)] active:shadow-none active:translate-y-1 w-full transition-all" onclick="event.stopPropagation();">
-                مستعد! 👍
-            </button>
-        </div>
-    </div>
-
-    <!-- شاشة اللعب -->
-    <div id="game-screen" class="hidden w-full max-w-6xl px-4 flex-col items-center justify-between h-full min-h-0 overflow-hidden pt-16 sm:pt-20 md:pt-24 pb-3 md:pb-6 relative z-10">
-
-        <div id="live-bg-container" class="absolute inset-0 pointer-events-none overflow-hidden z-0"></div>
-        <div id="env-interactable" class="animate-pulse-soft hidden" onclick="event.stopPropagation();">☀️</div>
-
-        <div class="w-full flex justify-between items-start z-20 shrink-0">
-            <div class="flex gap-3">
-                <button onclick="location.reload(); event.stopPropagation();" class="bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-gray-100 text-2xl md:text-3xl hover:bg-red-50">🚪</button>
-                <button onclick="resetCurrentWorld(); event.stopPropagation();" class="bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-gray-100 text-2xl md:text-3xl hover:bg-blue-50">🔄</button>
-                <button onclick="openShopFromGame(); event.stopPropagation();" class="bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-gray-100 text-2xl md:text-3xl hover:bg-purple-50">🛒</button>
-            </div>
-            <div id="mini-album" class="flex gap-2 bg-white/90 backdrop-blur p-2 md:p-3 rounded-full shadow-md border-2 border-white items-center">
-                <span class="text-xl md:text-2xl ml-2 font-black text-pink-500" id="current-score-display">0</span>🍬
-            </div>
-        </div>
-
-        <div class="w-full max-w-4xl z-20 mt-2 px-2 sm:px-0 shrink-0">
-            <div id="world-panel" class="glass-panel rounded-[1.5rem] p-2 sm:p-3 md:p-4 border border-white/70">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-3">
-                    <div>
-                        <div id="world-chip" class="inline-flex items-center gap-2 bg-white/80 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm md:text-base font-black text-indigo-700 shadow-sm whitespace-nowrap">
-                            🌟 العالم
-                        </div>
-                        <div id="world-hint" class="text-xs sm:text-sm md:text-base font-bold text-gray-600 mt-1">ابحث بتركيز ومرح</div>
-                    </div>
-                    <div class="w-full md:w-64">
-                        <div class="flex justify-between mb-1">
-                            <span id="progress-label" class="text-xs font-black text-gray-500">تقدم المرحلة</span>
-                            <span id="level-progress-text" class="text-xs font-black text-pink-500">1/3</span>
-                        </div>
-                        <div class="progress-track">
-                            <div id="progress-fill" class="progress-fill"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex-1 w-full flex flex-col justify-center items-center relative min-h-0 my-2" id="play-area">
-            <div id="items-wrapper" class="relative flex justify-center items-center w-full h-full z-10"></div>
-        </div>
-
-        <div class="flex flex-col items-center justify-end shrink-0 w-full z-20">
-            <!-- تفاعل الشخصية عند النقر عليها -->
-            <div id="sukkar-character" class="text-7xl md:text-9xl transition-transform duration-300 drop-shadow-xl relative cursor-pointer" onclick="pokeMascot(event)">
-                👦
-                <div id="candy-jar" class="absolute -right-10 md:-right-16 bottom-0 text-4xl md:text-6xl hidden transition-all pointer-events-none">🫙</div>
-            </div>
-            
-            <div class="relative w-full flex justify-center mt-3 md:mt-5 min-h-[60px] md:min-h-[80px] pointer-events-none">
-                <div id="message-board" class="absolute bg-white/95 text-gray-800 px-8 md:px-12 py-3 md:py-4 rounded-full text-2xl md:text-4xl font-black shadow-lg opacity-0 transition-all duration-300 border-2 border-gray-100 text-center whitespace-nowrap">
-                    أين الحلوى؟
-                </div>
-                <button id="next-btn" class="hidden absolute bg-blue-500 text-white text-2xl md:text-4xl font-black py-3 md:py-4 px-12 md:px-16 rounded-full shadow-[0_6px_0_rgb(59,130,246)] active:shadow-none active:translate-y-1 transition-all border-2 border-white z-40 pointer-events-auto" onclick="event.stopPropagation();">
-                    التالي ➡️
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let audioCtx;
-        let isMuted = false;
-        let currentWorldIndex = 0;
-        let currentLevelInWorld = 0;
-        let sessionScore = 0; 
-        let isInputLocked = false;
-        let hintTimeout;
-        let pendingUrl = '';
-        let earnedStickers = [];
-        let playerEmoji = '👶';
-        let bgInterval;
-        let currentItems = [];   // مرجع لعناصر المستوى الحالي (لإعادة التموضع والوصول بلوحة المفاتيح)
-        let resizeTimer;         // لتهدئة حدث تغيير الحجم
-        
-        // --- نظام الحفظ والمخزون ---
-        let allTimeCandies = 0;
-        let allTimeGolden = 0;
-        let allTimeStickers = [];
-        let unlockedChars = ['👦', '👧']; // الشخصيات المفتوحة الافتراضية
-        
-        function loadSavedData() {
-            try {
-                const saved = localStorage.getItem('sukkarInfiniteData');
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    allTimeCandies = data.candies || 0;
-                    allTimeGolden = data.golden || 0;
-                    allTimeStickers = data.stickers || [];
-                    unlockedChars = data.unlockedChars || ['👦', '👧'];
-                    currentWorldIndex = data.worldProgress || 0;
-                }
-            } catch(e) { console.warn("تعذر التحميل", e); }
-        }
-
-        function saveGameData() {
-            try {
-                const data = { candies: allTimeCandies, golden: allTimeGolden, stickers: allTimeStickers, unlockedChars: unlockedChars, worldProgress: currentWorldIndex };
-                localStorage.setItem('sukkarInfiniteData', JSON.stringify(data));
-            } catch(e) { console.warn("تعذر الحفظ", e); }
-        }
-        loadSavedData();
-
-        // --- بيانات المتجر ---
-        const shopCharacters = [
-            { emoji: '👦', name: 'وَلَد', price: 0 },
-            { emoji: '👧', name: 'بِنْت', price: 0 },
-            { emoji: '🐶', name: 'جَرْو', price: 20 },
-            { emoji: '🤖', name: 'رُوبُوت', price: 50 },
-            { emoji: '👽', name: 'فَضَائِي', price: 100 },
-            { emoji: '🦄', name: 'يُونِيكُورْن', price: 200 }
-        ];
-
-        function triggerHaptic(type) {
-            if (navigator.vibrate) {
-                if (type === 'light') navigator.vibrate(50);
-                if (type === 'success') navigator.vibrate([100, 50, 100]);
-                if (type === 'jackpot') navigator.vibrate([100, 50, 100, 50, 200]);
-                if (type === 'pop') navigator.vibrate([50, 50, 50]); 
-            }
-        }
-
-        function createMagicSparkle(e) {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'magic-sparkle text-yellow-400';
-            sparkle.textContent = '✨';
-            let x = e.clientX || (e.touches && e.touches[0].clientX);
-            let y = e.clientY || (e.touches && e.touches[0].clientY);
-            if(x && y) {
-                sparkle.style.left = (x - 10) + 'px'; sparkle.style.top = (y - 10) + 'px';
-                document.body.appendChild(sparkle); setTimeout(() => sparkle.remove(), 800);
-            }
-        }
-
-        const DOM = {
-            startScreen: document.getElementById('start-screen'),
-            shopScreen: document.getElementById('shop-screen'),
-            shopContainer: document.getElementById('shop-items-container'),
-            shopCandyCount: document.getElementById('shop-candy-count'),
-            gameScreen: document.getElementById('game-screen'),
-            stageTransition: document.getElementById('stage-transition'),
-            startBtn: document.getElementById('start-btn'),
-            continueStageBtn: document.getElementById('continue-stage-btn'),
-            itemsWrapper: document.getElementById('items-wrapper'),
-            sukkar: document.getElementById('sukkar-character'),
-            message: document.getElementById('message-board'),
-            nextBtn: document.getElementById('next-btn'),
-            stageTitle: document.getElementById('stage-title'),
-            stageIcon: document.getElementById('stage-icon'),
-            stageDesc: document.getElementById('stage-desc'),
-            stageCard: document.getElementById('stage-card'),
-            muteBtn: document.getElementById('mute-btn'),
-            parentalGate: document.getElementById('parental-gate'),
-            envElement: document.getElementById('env-interactable'),
-            miniAlbum: document.getElementById('mini-album'),
-            candyJar: document.getElementById('candy-jar'),
-            trophyRoom: document.getElementById('trophy-room'),
-            savedCandies: document.getElementById('saved-candies-count'),
-            savedGolden: document.getElementById('saved-golden-count'),
-            savedStickers: document.getElementById('saved-stickers-container'),
-            currentScore: document.getElementById('current-score-display'),
-            liveBgContainer: document.getElementById('live-bg-container'),
-            worldChip: document.getElementById('world-chip'),
-            worldHint: document.getElementById('world-hint'),
-            levelProgressText: document.getElementById('level-progress-text'),
-            progressFill: document.getElementById('progress-fill')
-        };
-
-        const praises = ['أَحْسَنْتَ!', 'عَبْقَرِي!', 'ذَكِيّ جِدّاً!', 'بَطَل!', 'رَائِع!'];
-        const mascotPhrases = ['أَنَا أُحِبُّك!', 'هَيَّا نَلْعَب!', 'أَنْتَ ذَكِيّ!', 'تِيكِي تِيكِي!', 'أَنْتَ صَدِيقِي!'];
-        
-        let availableVoices = [];
-        let arabicVoiceReady = false;
-        let voiceNoticeShown = false;
-
-        function refreshVoices() {
-            if (!('speechSynthesis' in window)) return;
-            availableVoices = window.speechSynthesis.getVoices() || [];
-            arabicVoiceReady = availableVoices.some(v => (v.lang || '').toLowerCase().includes('ar'));
-        }
-
-        if ('speechSynthesis' in window) {
-            refreshVoices();
-            if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = refreshVoices;
-            // بعض المتصفحات (خاصة على الحاسوب) تُحمّل الأصوات متأخرة أو عبر الإنترنت — نعيد المحاولة عدة مرات
-            let voiceTries = 0;
-            const voicePoll = setInterval(() => {
-                refreshVoices(); voiceTries++;
-                if (arabicVoiceReady || voiceTries > 12) clearInterval(voicePoll);
-            }, 500);
-        }
-
-        // إشعار لطيف (للوالدين) عند غياب النطق العربي على الجهاز، مع إرشاد لتفعيله
-        function maybeShowVoiceNotice() {
-            if (voiceNoticeShown || arabicVoiceReady || !('speechSynthesis' in window)) return;
-            voiceNoticeShown = true;
-            const bar = document.createElement('div');
-            bar.id = 'voice-notice';
-            bar.style.cssText = 'position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:120;max-width:92%;width:440px;background:#fff;border:2px solid #fbbf24;border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.18);padding:12px 14px;display:flex;align-items:center;gap:10px;font-family:Tajawal,sans-serif;font-weight:800;color:#374151;font-size:14px;text-align:right;';
-            bar.innerHTML = '<span style="font-size:24px">🔊</span>'
-                + '<span style="flex:1;line-height:1.5">النُّطْق العربي غير مُثبَّت على هذا الحاسوب. لِتفعيله: ثبّت «حزمة اللغة العربية» في نظام التشغيل. اللعبة تعمل بالكامل بالمؤثرات والكلمات المكتوبة.</span>'
-                + '<button style="background:#fbbf24;border:none;border-radius:10px;padding:8px 14px;font-weight:900;cursor:pointer;font-family:inherit" onclick="this.parentElement.remove()">حَسَناً</button>';
-            document.body.appendChild(bar);
-            // يختفي تلقائياً بعد مدة حتى لا يحجب أزرار اللعب
-            setTimeout(() => { if (bar.isConnected) bar.remove(); }, 12000);
-        }
-
-        // --- 10 عوالم متكاملة (مع إضافة عالم الديناصورات!) ---
-        const worlds = [
-            {
-                id: 'shapes', name: 'الأشكال والألوان', icon: '🎨', bgColor: '#fdf4ff', env: '✨', bgEffect: 'none',
-                introDesc: 'لنتعرف على الأشكال والألوان الجميلة!',
-                levelsNeeded: 2, mechanic: 'simple', itemCount: 2, sticker: '🏅 بطل الأشكال',
-                objects: [
-                    { word: 'دَائِرَة خَضْرَاء', audio: 'دَائِرَة خَضْرَاء', emoji: '🟢', bg: 'bg-white' },
-                    { word: 'مُرَبَّع أَزْرَق', audio: 'مُرَبَّع أَزْرَق', emoji: '🟦', bg: 'bg-white' },
-                    { word: 'مُثَلَّث أَحْمَر', audio: 'مُثَلَّث أَحْمَر', emoji: '🔺', bg: 'bg-white' },
-                    { word: 'قَلْب وَرْدِي', audio: 'قَلْب وَرْدِي', emoji: '💗', bg: 'bg-white' }
-                ]
-            },
-            {
-                id: 'numbers', name: 'الأرقام', icon: '🔢', bgColor: '#eef2ff', env: '✨', bgEffect: 'none',
-                introDesc: 'هَيَّا نَعُدّ! ابْحَثْ عَنِ الحَلْوَى خَلْفَ الأَرْقَام!',
-                levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '🔢 بطل الأرقام',
-                objects: [
-                    { word: 'وَاحِد', audio: 'رَقْم وَاحِد', emoji: '1️⃣', bg: 'bg-white' },
-                    { word: 'اِثْنَان', audio: 'رَقْم اِثْنَان', emoji: '2️⃣', bg: 'bg-white' },
-                    { word: 'ثَلَاثَة', audio: 'رَقْم ثَلَاثَة', emoji: '3️⃣', bg: 'bg-white' },
-                    { word: 'أَرْبَعَة', audio: 'رَقْم أَرْبَعَة', emoji: '4️⃣', bg: 'bg-white' },
-                    { word: 'خَمْسَة', audio: 'رَقْم خَمْسَة', emoji: '5️⃣', bg: 'bg-white' },
-                    { word: 'سِتَّة', audio: 'رَقْم سِتَّة', emoji: '6️⃣', bg: 'bg-white' }
-                ]
-            },
-            {
-                id: 'letters', name: 'الحروف', icon: '🔤', bgColor: '#f0fdf4', env: '✨', bgEffect: 'none',
-                introDesc: 'تَعَلَّمِ الحُرُوف! أَيْنَ تَخْتَبِئُ الحَلْوَى؟',
-                levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '🔤 بطل الحروف',
-                objects: [
-                    { word: 'أَلِف', audio: 'حَرْفُ الأَلِف. أَ', emoji: 'أ', bg: 'bg-white' },
-                    { word: 'بَاء', audio: 'حَرْفُ البَاء. بَ', emoji: 'ب', bg: 'bg-white' },
-                    { word: 'تَاء', audio: 'حَرْفُ التَّاء. تَ', emoji: 'ت', bg: 'bg-white' },
-                    { word: 'جِيم', audio: 'حَرْفُ الجِيم. جَ', emoji: 'ج', bg: 'bg-white' },
-                    { word: 'دَال', audio: 'حَرْفُ الدَّال. دَ', emoji: 'د', bg: 'bg-white' },
-                    { word: 'رَاء', audio: 'حَرْفُ الرَّاء. رَ', emoji: 'ر', bg: 'bg-white' }
-                ]
-            },
-            {
-                id: 'emotions', name: 'المشاعر', icon: '😊', bgColor: '#fff7ed', env: '✨', bgEffect: 'none',
-                introDesc: 'مَا هَذَا الشُّعُور؟ ابْحَثْ عَنِ الحَلْوَى!',
-                levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '😊 خبير المشاعر',
-                objects: [
-                    { word: 'سَعِيد', audio: 'وَجْه سَعِيد', emoji: '😄', bg: 'bg-yellow-50' },
-                    { word: 'حَزِين', audio: 'وَجْه حَزِين', emoji: '😢', bg: 'bg-blue-50' },
-                    { word: 'غَاضِب', audio: 'وَجْه غَاضِب', emoji: '😠', bg: 'bg-red-50' },
-                    { word: 'مُتَفَاجِئ', audio: 'وَجْه مُتَفَاجِئ', emoji: '😲', bg: 'bg-purple-50' },
-                    { word: 'نَائِم', audio: 'وَجْه نَائِم', emoji: '😴', bg: 'bg-indigo-50' }
-                ]
-            },
-            {
-                id: 'farm', name: 'مزرعة الفواكه', icon: '🍎', bgColor: '#fdf2f8', env: '☀️', bgEffect: 'none',
-                introDesc: 'الآن لنبحث عن الحلوى خلف الفواكه اللذيذة!',
-                levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '🍎 بطل المزرعة',
-                objects: [
-                    { word: 'تُفَّاحَة حَمْرَاء', audio: 'تُفَّاحَة حَمْرَاء', emoji: '🍎', bg: 'bg-red-50' },
-                    { word: 'مَوْزَة صَفْرَاء', audio: 'مَوْزَة صَفْرَاء', emoji: '🍌', bg: 'bg-yellow-50' },
-                    { word: 'جَزَرَة بُرْتُقَالِيَّة', audio: 'جَزَرَة بُرْتُقَالِيَّة', emoji: '🥕', bg: 'bg-orange-50' },
-                    { word: 'عِنَب بَنَفْسَجِي', audio: 'عِنَب بَنَفْسَجِي', emoji: '🍇', bg: 'bg-purple-50' },
-                    { word: 'فَرَاوِلَة حَمْرَاء', audio: 'فَرَاوِلَة حَمْرَاء', emoji: '🍓', bg: 'bg-pink-50' }
-                ]
-            },
-            {
-                id: 'toys', name: 'عالم الألعاب', icon: '🧸', bgColor: '#ffedd5', env: '🪁', bgEffect: 'none',
-                introDesc: 'ألعابك المفضلة هنا.. ابحث خلفها!',
-                levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '🪀 صديق الألعاب',
-                objects: [
-                    { word: 'كُرَة مُلَوَّنَة', audio: 'كُرَة مُلَوَّنَة', emoji: '⚽', bg: 'bg-gray-100' },
-                    { word: 'دُبّ قُطْنِي', audio: 'دُبّ قُطْنِي', emoji: '🧸', bg: 'bg-amber-100' },
-                    { word: 'رُوبُوت ذَكِي', audio: 'رُوبُوت ذَكِي', emoji: '🤖', bg: 'bg-slate-200' },
-                    { word: 'طَيَّارَة وَرَقِيَّة', audio: 'طَيَّارَة وَرَقِيَّة', emoji: '🪁', bg: 'bg-green-100' }
-                ]
-            },
-            {
-                id: 'animals', name: 'أصدقاء الغابة', icon: '🦁', bgColor: '#fffbeb', env: '🦋', bgEffect: 'none',
-                introDesc: 'اسمع صوت الحيوان، وابحث عن الحلوى!',
-                levelsNeeded: 3, mechanic: 'simple', itemCount: 3, sticker: '🐾 صديق الحيوانات',
-                objects: [
-                    { word: 'قِطَّة لَطِيفَة', audio: 'مِيَاو... قِطَّة لَطِيفَة', emoji: '🐱', bg: 'bg-orange-50' },
-                    { word: 'بَقَرَة كَبِيرَة', audio: 'مُوو... بَقَرَة كَبِيرَة', emoji: '🐮', bg: 'bg-gray-50' },
-                    { word: 'كَلْب وَفِي', audio: 'هَاوهَاو... كَلْب وَفِي', emoji: '🐶', bg: 'bg-blue-50' },
-                    { word: 'أَسَد قَوِي', audio: 'زَئِير... أَسَد قَوِي', emoji: '🦁', bg: 'bg-yellow-100' }
-                ]
-            },
-            {
-                id: 'transport', name: 'وسائل النقل', icon: '🚗', bgColor: '#e0f2fe', env: '☁️', bgEffect: 'none',
-                introDesc: 'هيا نركب ونسافر! أين تختبئ الحلوى؟',
-                levelsNeeded: 3, mechanic: 'shuffle', itemCount: 3, sticker: '✈️ كابتن ذكي',
-                objects: [
-                    { word: 'سَيَّارَة حَمْرَاء', audio: 'بِيب بِيب... سَيَّارَة حَمْرَاء', emoji: '🚗', bg: 'bg-red-100' },
-                    { word: 'قِطَار سَرِيع', audio: 'تُوت تُوت... قِطَار سَرِيع', emoji: '🚂', bg: 'bg-slate-100' },
-                    { word: 'طَائِرَة بَيْضَاء', audio: 'فِيييو... طَائِرَة بَيْضَاء', emoji: '✈️', bg: 'bg-sky-100' }
-                ]
-            },
-            {
-                id: 'weather', name: 'حالة الطقس', icon: '🌈', bgColor: '#f0fdfa', env: '☀️', bgEffect: 'rain',
-                introDesc: 'الجو يتغير! استعد للبحث في الطقس!',
-                levelsNeeded: 3, mechanic: 'shuffle', itemCount: 3, sticker: '☔ خبير الطقس',
-                objects: [
-                    { word: 'شَمْس دَافِئَة', audio: 'شَمْس دَافِئَة', emoji: '☀️', bg: 'bg-yellow-100' },
-                    { word: 'غَيْمَة مُمْطِرَة', audio: 'غَيْمَة مُمْطِرَة', emoji: '🌧️', bg: 'bg-gray-200' },
-                    { word: 'قَوْسُ قُزَح', audio: 'قَوْسُ قُزَح', emoji: '🌈', bg: 'bg-pink-50' },
-                    { word: 'رِيَاح قَوِيَّة', audio: 'رِيَاح قَوِيَّة', emoji: '💨', bg: 'bg-cyan-100' }
-                ]
-            },
-            {
-                id: 'space', name: 'الفضاء الخارجي', icon: '🚀', bgColor: '#170b3b', env: '🌍', isSpace: true, bgEffect: 'stars',
-                introDesc: 'هيا نطير إلى الفضاء! الأشياء تتحرك بسرعة!',
-                levelsNeeded: 3, mechanic: 'shuffle', itemCount: 3, sticker: '🚀 رائد فضاء',
-                objects: [
-                    { word: 'صَارُوخ فَضَائِي', audio: 'صَارُوخ فَضَائِي', emoji: '🚀', bg: 'bg-purple-900' },
-                    { word: 'كَوْكَب جَمِيل', audio: 'كَوْكَب جَمِيل', emoji: '🪐', bg: 'bg-indigo-900' },
-                    { word: 'قَمَر مُنِير', audio: 'قَمَر مُنِير', emoji: '🌙', bg: 'bg-slate-800' },
-                    { word: 'نَجْمَة سَاطِعَة', audio: 'نَجْمَة سَاطِعَة', emoji: '⭐', bg: 'bg-blue-900' }
-                ]
-            },
-            {
-                id: 'sea', name: 'أعماق البحار', icon: '🐠', bgColor: '#ecfeff', env: '🫧', bgEffect: 'bubbles',
-                introDesc: 'اغص في البحر، ركز جيداً في الفقاعات!',
-                levelsNeeded: 3, mechanic: 'shuffle', itemCount: 3, sticker: '⚓ غواص ماهر',
-                objects: [
-                    { word: 'سَمَكَة زَرْقَاء', audio: 'سَمَكَة زَرْقَاء', emoji: '🐟', bg: 'bg-cyan-50' },
-                    { word: 'أُخْطُبُوط بَنَفْسَجِي', audio: 'أُخْطُبُوط بَنَفْسَجِي', emoji: '🐙', bg: 'bg-purple-100' },
-                    { word: 'سُلَحْفَاة خَضْرَاء', audio: 'سُلَحْفَاة خَضْرَاء', emoji: '🐢', bg: 'bg-green-100' },
-                    { word: 'حُوت أَزْرَق', audio: 'حُوت أَزْرَق', emoji: '🐳', bg: 'bg-blue-100' }
-                ]
-            },
-            {
-                id: 'dino', name: 'عالم الديناصورات', icon: '🦖', bgColor: '#fef3c7', env: '🌋', bgEffect: 'none',
-                introDesc: 'ديناصورات ضخمة! أين خبأت الحلوى؟',
-                levelsNeeded: 3, mechanic: 'shuffle', itemCount: 3, sticker: '🦴 مكتشف الديناصورات',
-                objects: [
-                    { word: 'دِينَاصُور أَخْضَر', audio: 'رَار... دِينَاصُور أَخْضَر', emoji: '🦖', bg: 'bg-green-100' },
-                    { word: 'دِينَاصُور أَزْرَق', audio: 'دِينَاصُور أَزْرَق', emoji: '🦕', bg: 'bg-blue-100' },
-                    { word: 'بَيْضَة دِينَاصُور', audio: 'بَيْضَة دِينَاصُور كَبِيرَة', emoji: '🥚', bg: 'bg-orange-50' },
-                    { word: 'بُرْكَان ثَائِر', audio: 'بُرْكَان ثَائِر', emoji: '🌋', bg: 'bg-red-100' }
-                ]
-            },
-            {
-                id: 'sleep', name: 'وقت النوم', icon: '🌙', bgColor: '#0f172a', env: '⭐', isNight: true, bgEffect: 'stars',
-                introDesc: 'حان وقت الراحة والهدوء.. أين الحلوى؟',
-                levelsNeeded: 2, mechanic: 'simple', itemCount: 3, sticker: '😴 نوم الهناء',
-                objects: [
-                    { word: 'وِسَادَة نَاعِمَة', audio: 'وِسَادَة نَاعِمَة', emoji: '🛌', bg: 'bg-slate-700' },
-                    { word: 'دُبُّ النَّوْم', audio: 'دُبُّ النَّوْم', emoji: '🧸', bg: 'bg-amber-900' },
-                    { word: 'كِتَابُ قِصَّة', audio: 'كِتَابُ قِصَّة', emoji: '📖', bg: 'bg-indigo-900' }
-                ]
-            }
-        ];
-
-        function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance('');
-                utterance.volume = 0; window.speechSynthesis.speak(utterance);
-                // فحص مؤجّل: بعد إتاحة وقت كافٍ لتحميل الأصوات، إن لم يوجد صوت عربي نعرض الإرشاد مرة واحدة
-                setTimeout(() => { refreshVoices(); maybeShowVoiceNotice(); }, 4000);
-            }
-        }
-
-        DOM.muteBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); isMuted = !isMuted;
-            DOM.muteBtn.textContent = isMuted ? '🔇' : '🔊';
-            DOM.muteBtn.classList.toggle('opacity-50', isMuted);
-            if(isMuted) window.speechSynthesis.cancel();
-        });
-
-        function speakWord(text) {
-            if (isMuted || !('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ar-SA'; utterance.rate = 0.85; utterance.pitch = 1.3; utterance.volume = 1;
-
-            if (!availableVoices || availableVoices.length === 0) refreshVoices();
-            const arabicVoices = availableVoices.filter(v => (v.lang || '').toLowerCase().includes('ar'));
-
-            if (arabicVoices.length > 0) {
-                const bestVoice = arabicVoices.find(v =>
-                    v.name.includes('Premium') || v.name.includes('Majed') || v.name.includes('Tariq') ||
-                    v.name.includes('Zeina') || v.name.includes('Laila') || v.name.includes('Google')
-                );
-                utterance.voice = bestVoice || arabicVoices[0];
-                window.speechSynthesis.speak(utterance);
-            }
-            // لا يوجد صوت عربي على هذا الجهاز (شائع على الحاسوب): لا ننطق بصوت أجنبي مشوَّه.
-            // الإشعار الإرشادي يظهر عبر فحص مؤجّل في initAudio بعد إتاحة وقت كافٍ لتحميل الأصوات.
-        }
-
-        function playMarimba(freq, delay = 0) {
-            if (isMuted || !audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine'; 
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-            gain.gain.setValueAtTime(0, audioCtx.currentTime + delay);
-            gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + delay + 0.02);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.4);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(audioCtx.currentTime + delay); osc.stop(audioCtx.currentTime + delay + 0.5);
-        }
-
-        const Sound = {
-            wrong: () => { playMarimba(200); playMarimba(180, 0.1); },
-            win: () => { playMarimba(523.25); playMarimba(659.25, 0.1); playMarimba(783.99, 0.2); playMarimba(1046.50, 0.3); },
-            jackpot: () => { playMarimba(523.25); playMarimba(659.25, 0.1); playMarimba(783.99, 0.2); playMarimba(1046.50, 0.3); playMarimba(1318.51, 0.4); playMarimba(1567.98, 0.5); },
-            buy: () => { playMarimba(1000); playMarimba(1500, 0.1); }, // صوت شراء الكاشير
-            shuffle: () => playMarimba(300, 0),
-            pop: () => { playMarimba(700); playMarimba(900, 0.05); }, 
-            lullaby: () => { [261.63, 329.63, 392.00, 523.25].forEach((f, i) => playMarimba(f, i * 0.4)); }
-        };
-
-        // --- بيئات حية ---
-        function startLiveBackground(effect) {
-            clearInterval(bgInterval);
-            DOM.liveBgContainer.innerHTML = '';
-            if(effect === 'none') return;
-
-            let symbol, animClass;
-            if(effect === 'bubbles') { symbol = '🫧'; animClass = 'floatUp'; }
-            if(effect === 'rain') { symbol = '💧'; animClass = 'floatDown'; }
-            if(effect === 'stars') { symbol = '⭐'; animClass = 'floatSide'; }
-
-            bgInterval = setInterval(() => {
-                const el = document.createElement('div');
-                el.className = `env-particle text-xl md:text-2xl`;
-                el.textContent = symbol;
-                el.style.left = `${Math.random() * 100}vw`;
-                el.style.animation = `${animClass} ${4 + Math.random() * 4}s linear forwards`;
-                DOM.liveBgContainer.appendChild(el);
-                setTimeout(() => el.remove(), 8000);
-            }, 600);
-        }
-
-        // --- المتجر ---
-        function renderShop() {
-            DOM.shopCandyCount.textContent = allTimeCandies;
-            DOM.shopContainer.innerHTML = '';
-            
-            shopCharacters.forEach((char) => {
-                const isUnlocked = unlockedChars.includes(char.emoji);
-                const item = document.createElement('div');
-                item.className = `shop-item flex flex-col items-center bg-white p-4 md:p-6 rounded-3xl shadow-xl border-4 ${isUnlocked ? 'border-green-300 cursor-pointer' : 'border-gray-200 locked'}`;
-                
-                let actionHTML = '';
-                if(isUnlocked) {
-                    actionHTML = `<div class="mt-4 bg-green-100 text-green-700 font-bold px-4 py-1 rounded-full text-sm md:text-base">اخْتِيَار ✅</div>`;
-                    item.onclick = (e) => { e.stopPropagation(); selectCharacter(char.emoji); };
-                } else {
-                    actionHTML = `<div class="mt-4 bg-pink-100 text-pink-700 font-black px-4 py-1 rounded-full text-sm md:text-base flex items-center gap-1 cursor-pointer">
-                        ${char.price} 🍬 شِرَاء
-                    </div>`;
-                    item.onclick = (e) => { e.stopPropagation(); buyCharacter(char); };
-                }
-
-                item.innerHTML = `
-                    <div class="text-6xl md:text-[6rem] mb-2 drop-shadow-md">${char.emoji}</div>
-                    <div class="text-xl md:text-2xl font-black text-gray-700">${char.name}</div>
-                    ${actionHTML}
-                `;
-                DOM.shopContainer.appendChild(item);
-            });
-        }
-
-        function selectCharacter(emoji) {
-            playMarimba(600); triggerHaptic('light');
-            playerEmoji = emoji;
-            DOM.shopScreen.classList.remove('opacity-100');
-            setTimeout(() => {
-                DOM.shopScreen.classList.add('hidden'); DOM.shopScreen.classList.remove('flex');
-                startWorldTransition();
-            }, 400);
-        }
-
-        function buyCharacter(char) {
-            if(allTimeCandies >= char.price) {
-                Sound.buy(); triggerHaptic('success');
-                allTimeCandies -= char.price;
-                unlockedChars.push(char.emoji);
-                playerEmoji = char.emoji;   // تطبيق الشخصية فوراً بعد الشراء
-                saveGameData();
-                speakWord('مُبَارَك! صَدِيق جَدِيد!');
-                renderShop();
-                // اشترِ وألعبْ بنقرة واحدة: نختار الشخصية الجديدة تلقائياً بعد لحظة احتفال
-                setTimeout(() => selectCharacter(char.emoji), 850);
-            } else {
-                Sound.wrong(); triggerHaptic('light');
-                speakWord('حَلْوَى غَيْر كَافِيَة');
-            }
-        }
-
-        // تفاعل الشخصية (Tamagotchi)
-        function pokeMascot(e) {
-            e.stopPropagation();
-            if(isInputLocked) return;
-            triggerHaptic('light');
-            DOM.sukkar.classList.remove('animate-bounce');
-            void DOM.sukkar.offsetWidth;
-            DOM.sukkar.classList.add('animate-bounce');
-            
-            const p = mascotPhrases[Math.floor(Math.random() * mascotPhrases.length)];
-            speakWord(p);
-            playMarimba(800); playMarimba(1000, 0.1);
-            
-            // نجوم سحرية
-            createParticles(DOM.sukkar, ['✨', '💖'], 3);
-        }
-
-        function showTrophyRoom() {
-            DOM.savedCandies.textContent = allTimeCandies;
-            DOM.savedGolden.textContent = allTimeGolden;
-            DOM.savedStickers.innerHTML = '';
-            
-            const uniqueStickers = [...new Set(allTimeStickers)];
-            if(uniqueStickers.length === 0) {
-                DOM.savedStickers.innerHTML = '<p class="text-gray-400 font-bold w-full">العب لتربح أوسمة الأبطال!</p>';
-            } else {
-                uniqueStickers.forEach(s => {
-                    DOM.savedStickers.innerHTML += `<div class="bg-orange-50 border border-orange-200 p-3 rounded-xl text-sm md:text-lg font-bold text-orange-800 shadow-sm">${s}</div>`;
-                });
-            }
-            
-            DOM.trophyRoom.classList.remove('hidden'); DOM.trophyRoom.classList.add('flex');
-            void DOM.trophyRoom.offsetWidth; DOM.trophyRoom.classList.add('opacity-100');
-            speakWord('غُرْفَةُ الْأَبْطَال'); playMarimba(600);
-        }
-
-        function closeTrophyRoom() {
-            DOM.trophyRoom.classList.remove('opacity-100');
-            setTimeout(() => { DOM.trophyRoom.classList.add('hidden'); DOM.trophyRoom.classList.remove('flex'); }, 300);
-            playMarimba(400);
-        }
-
-        function requestLinkOpen(url) {
-            pendingUrl = url;
-            DOM.parentalGate.classList.remove('hidden'); void DOM.parentalGate.offsetWidth;
-            DOM.parentalGate.classList.remove('opacity-0'); DOM.parentalGate.classList.add('opacity-100');
-            generateMathProblem();
-        }
-
-        function closeParentalGate() {
-            DOM.parentalGate.classList.remove('opacity-100'); DOM.parentalGate.classList.add('opacity-0');
-            setTimeout(() => { DOM.parentalGate.classList.add('hidden'); }, 300);
-            pendingUrl = '';
-        }
-
-        function generateMathProblem() {
-            const num1 = Math.floor(Math.random() * 5) + 2; const num2 = Math.floor(Math.random() * 5) + 2;
-            const answer = num1 + num2;
-            document.getElementById('math-problem').textContent = `${num1} + ${num2} = ?`;
-            const optionsDiv = document.getElementById('math-options'); optionsDiv.innerHTML = '';
-            let options = [answer, answer + 1, answer - 1].sort(() => Math.random() - 0.5);
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'bg-blue-100 hover:bg-blue-200 text-blue-800 font-black text-2xl py-3 px-6 rounded-xl transition-colors';
-                btn.textContent = opt;
-                btn.onclick = (e) => {
-                    e.stopPropagation();
-                    if (opt === answer) {
-                        const urlToOpen = pendingUrl;   // نلتقط الرابط قبل الإغلاق لأنه يُصفّر pendingUrl
-                        closeParentalGate();
-                        if (urlToOpen) window.open(urlToOpen, '_blank');
-                    } else {
-                        btn.classList.add('bg-red-200', 'text-red-800'); btn.textContent = 'خطأ';
-                        triggerHaptic('light'); setTimeout(generateMathProblem, 800);
-                    }
-                };
-                optionsDiv.appendChild(btn);
-            });
-        }
-
-        DOM.startBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); initAudio(); DOM.startScreen.style.opacity = '0';
-            setTimeout(() => { 
-                DOM.startScreen.style.display = 'none'; 
-                DOM.shopScreen.classList.remove('hidden'); DOM.shopScreen.classList.add('flex');
-                renderShop();
-                void DOM.shopScreen.offsetWidth; DOM.shopScreen.classList.add('opacity-100');
-                speakWord('مَتْجَر الْأَصْدِقَاء!');
-            }, 500);
-        });
-
-        DOM.continueStageBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); playMarimba(600); DOM.stageTransition.style.opacity = '0';
-            DOM.stageCard.classList.remove('scale-100'); DOM.stageCard.classList.add('scale-90');
-            setTimeout(() => {
-                DOM.stageTransition.classList.add('hidden');
-                DOM.gameScreen.classList.remove('hidden'); DOM.gameScreen.classList.add('flex');
-                setupLevel();
-            }, 500);
-        });
-
-        DOM.nextBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); playMarimba(600); currentLevelInWorld++;
-            const world = worlds[currentWorldIndex];
-            
-            if (currentLevelInWorld >= world.levelsNeeded) {
-                earnedStickers.push(world.sticker);
-                allTimeStickers.push(world.sticker); updateMiniAlbum();
-
-                currentLevelInWorld = 0; currentWorldIndex++;
-                if (currentWorldIndex >= worlds.length) {
-                    currentWorldIndex = 0; saveGameData(); // تصفير التقدم بعد إكمال كل العوالم
-                    endGameCelebration();
-                } else {
-                    saveGameData(); // حفظ التقدم الجديد ليُستأنف لاحقاً
-                    startWorldTransition();
-                }
-            } else { setupLevel(); }
-        });
-
-        function resetCurrentWorld() { currentLevelInWorld = 0; setupLevel(); }
-
-        // إعادة تشغيل اللعبة من البداية بشكل نظيف (توقف الصوت والمؤثرات أولاً)
-        function restartGame() {
-            try { window.speechSynthesis.cancel(); } catch(e) {}
-            clearInterval(bgInterval);
-            location.reload();
-        }
-
-        // فتح المتجر أثناء اللعب لتغيير الشخصية (يحافظ على التقدم الحالي)
-        function openShopFromGame() {
-            clearTimeout(hintTimeout);
-            DOM.gameScreen.classList.add('hidden'); DOM.gameScreen.classList.remove('flex');
-            DOM.shopScreen.classList.remove('hidden'); DOM.shopScreen.classList.add('flex');
-            renderShop();
-            void DOM.shopScreen.offsetWidth; DOM.shopScreen.classList.add('opacity-100');
-            playMarimba(600);
-        }
-
-        // دعم لوحة المفاتيح: الأرقام 1..N لاختيار العنصر حسب موضعه على الشاشة
-        document.addEventListener('keydown', (e) => {
-            if (DOM.gameScreen.classList.contains('hidden') || isInputLocked) return;
-            const n = parseInt(e.key, 10);
-            if (!isNaN(n) && n >= 1 && currentItems.length) {
-                const item = currentItems.find(it => it.currentPos === n - 1);
-                if (item) handleItemSelection(item, currentItems);
-            }
-        });
-
-        function updateMiniAlbum() {
-            DOM.currentScore.textContent = sessionScore;
-        }
-
-        function updateHud() {
-            const world = worlds[currentWorldIndex] || worlds[0];
-            const levelNumber = currentLevelInWorld + 1;
-            const totalLevels = world.levelsNeeded;
-            const progressPercent = Math.min(100, Math.round((levelNumber / totalLevels) * 100));
-
-            DOM.worldChip.innerHTML = `<span class="ml-1">${world.icon}</span>${world.name}`;
-            DOM.worldHint.textContent = world.mechanic === 'shuffle' ? 'استخدم التركيز والذاكرة' : 'ابحث عن الحلوى بكل هدوء';
-            DOM.levelProgressText.textContent = `${levelNumber}/${totalLevels}`;
-            DOM.progressFill.style.width = `${progressPercent}%`;
-        }
-
-        function startWorldTransition() {
-            DOM.gameScreen.classList.add('hidden'); DOM.gameScreen.classList.remove('flex');
-            const world = worlds[currentWorldIndex];
-            
-            document.documentElement.style.setProperty('--bg-color', world.bgColor);
-            document.body.className = 'flex flex-col items-center justify-center relative select-none';
-            if(world.isNight) document.body.classList.add('night-mode');
-            if(world.isSpace) document.body.classList.add('space-mode');
-
-            const stageLabel = (currentWorldIndex === worlds.length - 1) ? 'المرحلة الأخيرة' : `المرحلة ${currentWorldIndex + 1}`;
-            DOM.stageTitle.textContent = world.introTitle || stageLabel; DOM.stageIcon.textContent = world.icon;
-            DOM.stageDesc.textContent = world.introDesc; DOM.stageTransition.classList.remove('hidden');
-            void DOM.stageTransition.offsetWidth; DOM.stageTransition.style.opacity = '1';
-            DOM.stageCard.classList.remove('scale-90'); DOM.stageCard.classList.add('scale-100');
-            
-            DOM.envElement.textContent = world.env; DOM.envElement.classList.remove('hidden');
-            DOM.envElement.onclick = (e) => { e.stopPropagation(); playMarimba(800); triggerHaptic('light'); DOM.envElement.classList.add('animate-wobble-gentle'); setTimeout(()=>DOM.envElement.classList.remove('animate-wobble-gentle'), 400); };
-            
-            startLiveBackground(world.bgEffect);
-            updateMiniAlbum();
-            updateHud();
-        }
-
-        function showMessage(text, type = 'normal') {
-            DOM.message.textContent = text; DOM.message.style.opacity = 1; DOM.message.style.transform = 'scale(1)';
-            if(type === 'win') { DOM.message.className = 'absolute bg-green-100 text-green-700 px-8 md:px-12 py-3 md:py-4 rounded-full text-2xl md:text-4xl font-black shadow-lg transition-all duration-300 border-2 border-green-300 text-center z-10'; }
-            else if (type === 'jackpot') { DOM.message.className = 'absolute bg-yellow-100 text-yellow-700 px-8 md:px-12 py-3 md:py-4 rounded-full text-2xl md:text-4xl font-black shadow-lg transition-all duration-300 border-4 border-yellow-400 text-center z-10 animate-pulse'; }
-            else if (type === 'night' || type === 'space') { DOM.message.className = 'absolute bg-indigo-900 text-indigo-100 px-8 md:px-12 py-3 md:py-4 rounded-full text-2xl md:text-4xl font-black shadow-lg transition-all duration-300 border-2 border-indigo-700 text-center z-10'; }
-            else { DOM.message.className = 'absolute bg-white/95 text-gray-800 px-8 md:px-12 py-3 md:py-4 rounded-full text-2xl md:text-4xl font-black shadow-md transition-all duration-300 border-2 border-gray-100 text-center z-10'; }
-        }
-
-        function hideMessage() {
-            DOM.message.style.opacity = 0; DOM.message.style.transform = 'scale(0.9)';
-            setTimeout(() => { DOM.message.style.zIndex = -1; }, 300);
-        }
-
-        // حساب أبعاد ومواضع العناصر حسب حجم الشاشة (قابل لإعادة الاستخدام عند تغيير الحجم)
-        function computeLayout(itemCount) {
-            const screenWidth = window.innerWidth; const isDesktop = screenWidth >= 768;
-            const availableWidth = Math.min(screenWidth - 40, isDesktop ? 900 : 600);
-            const spacing = screenWidth < 400 ? 10 : (isDesktop ? 30 : 15);
-            const maxByWidth = Math.floor((availableWidth / itemCount) - spacing);
-            // تقييد الحجم بارتفاع منطقة اللعب المتاح حتى لا يفيض المحتوى رأسياً
-            const playArea = document.getElementById('play-area');
-            const availableHeight = playArea ? playArea.clientHeight : window.innerHeight * 0.4;
-            const maxByHeight = Math.floor(availableHeight * 0.92);
-            const floor = window.innerHeight < 480 ? 54 : 70;
-            const itemSize = Math.max(floor, Math.min(maxByWidth, maxByHeight, isDesktop ? 220 : 150));
-            const totalWidth = (itemSize * itemCount) + (spacing * (itemCount - 1));
-            const startX = Math.max(0, (availableWidth - totalWidth) / 2);
-            return { availableWidth, itemSize, spacing, startX };
-        }
-
-        // إعادة تموضع العناصر الموجودة دون إعادة بناء المستوى (يحفظ مكان الحلوى)
-        function positionItems() {
-            if (!currentItems || currentItems.length === 0) return;
-            const layout = computeLayout(currentItems.length);
-            DOM.itemsWrapper.style.width = `${layout.availableWidth}px`;
-            currentItems.forEach(item => {
-                item.container.style.width = `${layout.itemSize}px`;
-                item.container.style.height = `${layout.itemSize}px`;
-                item.container.style.left = `${layout.startX + (item.currentPos * (layout.itemSize + layout.spacing))}px`;
-            });
-        }
-
-        async function setupLevel() {
-            isInputLocked = true; clearTimeout(hintTimeout);
-            DOM.nextBtn.classList.add('hidden'); DOM.message.style.zIndex = 10;
-            
-            const world = worlds[currentWorldIndex];
-            DOM.sukkar.textContent = world.isNight ? '😴' : playerEmoji;
-            DOM.itemsWrapper.innerHTML = '';
-            
-            if(sessionScore > 0 && !world.isNight && !world.isSpace) {
-                DOM.candyJar.classList.remove('hidden');
-                DOM.candyJar.textContent = '🫙'.repeat(Math.min(3, Math.ceil(sessionScore/5))); 
-            } else { DOM.candyJar.classList.add('hidden'); }
-
-            showMessage(world.mechanic === 'shuffle' ? 'رَاقِبْ جَيِّداً...' : (world.isNight ? 'وَقْتُ النَّوْم..' : 'أَيْنَ الحَلْوَى؟'), world.isNight || world.isSpace ? 'night' : 'normal');
-            updateHud();
-
-            let levelObjects = [...world.objects].sort(() => Math.random() - 0.5).slice(0, world.itemCount);
-            const candyIndex = Math.floor(Math.random() * world.itemCount);
-            
-            const isGoldenCandyLevel = Math.random() < 0.2; 
-
-            const layout = computeLayout(world.itemCount);
-            const { itemSize, spacing, startX } = layout;
-            DOM.itemsWrapper.style.width = `${layout.availableWidth}px`;
-            const itemElements = [];
-
-            for (let i = 0; i < world.itemCount; i++) {
-                const obj = levelObjects[i]; const isCandy = i === candyIndex;
-                const container = document.createElement('div');
-                container.className = 'absolute'; container.style.left = `${startX + (i * (itemSize + spacing))}px`;
-                container.style.top = '50%'; container.style.transform = 'translateY(-50%)';
-                container.style.width = `${itemSize}px`; container.style.height = `${itemSize}px`;
-
-                const cover = document.createElement('div');
-                cover.className = `cover-item ${obj.bg}`; 
-                cover.innerHTML = `<div class="item-emoji">${obj.emoji}</div><div class="item-text">${obj.word}</div>`;
-
-                const hidden = document.createElement('div');
-                hidden.className = 'hidden-content'; 
-                
-                if (isCandy) {
-                    hidden.textContent = isGoldenCandyLevel ? '🍬✨' : '🍬';
-                    if (isGoldenCandyLevel) hidden.classList.add('golden-glow');
-                } else {
-                    hidden.textContent = '⭐';
-                }
-
-                container.appendChild(hidden); container.appendChild(cover); DOM.itemsWrapper.appendChild(container);
-                itemElements.push({ container, cover, hidden, isCandy, isGolden: (isCandy && isGoldenCandyLevel), word: obj.word, audio: obj.audio, currentPos: i });
-            }
-
-            if (world.mechanic === 'shuffle') {
-                const candyItem = itemElements[candyIndex];
-                candyItem.cover.style.transform = 'translateY(-80%)'; candyItem.hidden.style.opacity = '1'; candyItem.hidden.style.transform = 'scale(1)';
-                DOM.sukkar.textContent = '😲'; await new Promise(r => setTimeout(r, 1800)); 
-
-                candyItem.cover.style.transform = 'translateY(0)'; candyItem.hidden.style.opacity = '0'; candyItem.hidden.style.transform = 'scale(0.5)';
-                Sound.shuffle(); await new Promise(r => setTimeout(r, 800));
-
-                showMessage('أَيْنَ اخْتَفَت؟', world.isNight || world.isSpace ? 'night' : 'normal'); 
-                DOM.sukkar.textContent = '🤔'; 
-
-                const shuffleCount = 4; const positions = Array.from({length: world.itemCount}, (_, i) => startX + (i * (itemSize + spacing)));
-                for (let s = 0; s < shuffleCount; s++) {
-                    let idx1 = Math.floor(Math.random() * (world.itemCount - 1)); let idx2 = idx1 + 1;
-                    let el1 = itemElements.find(e => e.currentPos === idx1); let el2 = itemElements.find(e => e.currentPos === idx2);
-
-                    el1.container.classList.add('shuffling'); el2.container.classList.add('shuffling');
-                    el1.container.style.left = `${positions[idx2]}px`; el2.container.style.left = `${positions[idx1]}px`;
-                    el1.currentPos = idx2; el2.currentPos = idx1;
-
-                    Sound.shuffle(); await new Promise(r => setTimeout(r, 1300)); 
-                    el1.container.classList.remove('shuffling'); el2.container.classList.remove('shuffling');
-                }
-            }
-
-            currentItems = itemElements;
-            window.onresize = () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(positionItems, 150);
-            };
-
-            itemElements.forEach(item => {
-                const interact = (e) => { e.preventDefault(); e.stopPropagation(); handleItemSelection(item, itemElements); };
-                item.container.addEventListener('mousedown', interact); item.container.addEventListener('touchstart', interact, {passive: false});
-            });
-
-            isInputLocked = false; startSmartHint(itemElements[candyIndex].container);
-        }
-
-        function startSmartHint(correctContainer) {
-            clearTimeout(hintTimeout);
-            hintTimeout = setTimeout(() => {
-                if(!isInputLocked) {
-                    correctContainer.classList.add('animate-wobble-gentle'); playMarimba(400); 
-                    setTimeout(() => correctContainer.classList.remove('animate-wobble-gentle'), 400);
-                    startSmartHint(correctContainer); 
-                }
-            }, 6000); 
-        }
-
-        function handleItemSelection(selectedItem, allItems) {
-            if (isInputLocked || selectedItem.cover.style.opacity === '0') return;
-            clearTimeout(hintTimeout);
-            
-            speakWord(selectedItem.audio);
-
-            if (selectedItem.isCandy) {
-                isInputLocked = true; 
-                
-                const earnedPoints = selectedItem.isGolden ? 3 : 1;
-                sessionScore += earnedPoints;
-                allTimeCandies += earnedPoints;
-                if(selectedItem.isGolden) allTimeGolden++;
-                
-                saveGameData(); updateMiniAlbum();
-                triggerHaptic(selectedItem.isGolden ? 'jackpot' : 'success');
-                
-                const world = worlds[currentWorldIndex];
-                if(world.isNight) {
-                    Sound.lullaby(); DOM.sukkar.textContent = '😴'; showMessage('نَوْمُ الْهَنَاء..', 'night');
-                } else {
-                    setTimeout(() => selectedItem.isGolden ? Sound.jackpot() : Sound.win(), 500);
-                    DOM.sukkar.textContent = playerEmoji; 
-                    DOM.sukkar.className = 'text-7xl md:text-9xl animate-bounce drop-shadow-xl relative cursor-pointer';
-                    
-                    if (selectedItem.isGolden) {
-                        showMessage('حَلْوَى ذَهَبِيَّة! 3 نِقَاط!', 'jackpot');
-                        setTimeout(() => speakWord('رَائِع! حَلْوَى ذَهَبِيَّة!'), 1200);
-                    } else {
-                        const randomPraise = praises[Math.floor(Math.random() * praises.length)];
-                        showMessage(randomPraise, 'win');
-                        setTimeout(() => speakWord(randomPraise), 1200);
-                    }
-                }
-                
-                selectedItem.cover.style.transform = 'translateY(-60px) scale(0.8)';
-                selectedItem.cover.style.opacity = '0'; selectedItem.hidden.style.opacity = '1'; selectedItem.hidden.style.transform = 'scale(1.3)';
-                
-                let particleEmojis = selectedItem.isGolden ? ['✨', '💰', '🌟'] : (world.isNight ? ['💤', '⭐'] : (world.isSpace ? ['✨', '🪐'] : ['✨', '💖', '🎉']));
-                createParticles(selectedItem.container, particleEmojis, selectedItem.isGolden ? 12 : 6);
-
-                setTimeout(() => {
-                    hideMessage(); setTimeout(() => { DOM.nextBtn.classList.remove('hidden'); DOM.nextBtn.classList.add('animate-pop'); }, 300);
-                }, 2500);
-
-            } else {
-                triggerHaptic('light');
-                setTimeout(() => Sound.wrong(), 400);
-                selectedItem.container.classList.remove('animate-wobble-gentle'); void selectedItem.container.offsetWidth; 
-                selectedItem.container.classList.add('animate-wobble-gentle');
-
-                DOM.sukkar.textContent = '😯'; 
-                setTimeout(() => { if(!isInputLocked) DOM.sukkar.textContent = worlds[currentWorldIndex].isNight ? '😴' : playerEmoji; }, 1000);
-
-                selectedItem.cover.style.transform = 'scale(0.85) translateY(-15px)';
-                setTimeout(() => {
-                    selectedItem.cover.style.transform = 'scale(1) translateY(0)';
-                    createParticles(selectedItem.container, ['⭐'], 1); 
-                }, 400);
-                startSmartHint(allItems.find(i => i.isCandy).container); 
-            }
-        }
-
-        function createParticles(element, emojis, count = 6) {
-            const rect = element.getBoundingClientRect();
-            for (let i = 0; i < count; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'absolute pointer-events-none text-3xl md:text-4xl z-[100]';
-                particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                
-                const offsetX = (Math.random() - 0.5) * 100; const offsetY = (Math.random() - 0.5) * 100;
-                particle.style.left = `${rect.left + (rect.width / 2) - 15 + offsetX}px`;
-                particle.style.top = `${rect.top + (rect.height / 2) - 15 + offsetY}px`;
-                
-                particle.animate([
-                    { transform: 'translateY(0) scale(1) rotate(0deg)', opacity: 1 },
-                    { transform: `translateY(-200px) scale(1.5) rotate(${Math.random() * 90}deg)`, opacity: 0 }
-                ], { duration: 1500, easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)' });
-
-                document.body.appendChild(particle); setTimeout(() => particle.remove(), 1400);
-            }
-        }
-
-        function endGameCelebration() {
-            clearInterval(bgInterval); DOM.liveBgContainer.innerHTML = '';
-            document.body.className = 'flex flex-col items-center justify-center relative select-none';
-            DOM.gameScreen.innerHTML = `
-                <div class="flex flex-col items-center justify-start overflow-y-auto overflow-x-hidden h-full text-center w-full px-4 pt-20 sm:pt-24 pb-8 bg-gradient-to-b from-blue-100 to-pink-100 absolute inset-0 z-50" id="final-screen-container">
-                  <div class="my-auto flex flex-col items-center w-full">
-                    <h1 class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500 mb-4 md:mb-6 animate-bounce relative z-[80]">أَنْتَ بَطَل!</h1>
-                    <p class="text-xl md:text-3xl text-gray-700 font-bold mb-8 z-10">أَكْمَلْتَ كُلَّ المَرَاحِل وَجَمَعْتَ ${sessionScore} حَلْوَى!</p>
-                    
-                    <div class="bg-white/90 backdrop-blur p-6 rounded-3xl shadow-xl border-4 border-yellow-300 max-w-lg w-full mb-10 relative z-10">
-                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-yellow-900 px-6 py-1 rounded-full font-black text-lg shadow-sm cursor-pointer hover:bg-yellow-300" onclick="showTrophyRoom()">شَاهِد غُرْفَة الْأَبْطَال 🏆</div>
-                        <div class="flex flex-wrap justify-center gap-3 mt-4">
-                            ${earnedStickers.map(s => `<div class="bg-blue-50 border border-blue-100 p-3 rounded-xl text-sm md:text-lg font-bold text-blue-800 flex items-center justify-center shadow-sm">${s}</div>`).join('')}
-                        </div>
-                    </div>
-
-                    <div class="text-9xl md:text-[12rem] mb-12 animate-float z-10 cursor-pointer" onclick="pokeMascot(event)">${playerEmoji}</div>
-
-                    <button onclick="restartGame(); event.stopPropagation();" class="relative z-[80] bg-green-400 text-white text-3xl md:text-4xl font-black py-4 md:py-5 px-14 md:px-16 rounded-full shadow-[0_6px_0_rgb(74,222,128)] active:translate-y-2 active:shadow-none transition-all">
-                        الْعَبْ مِنْ جَدِيد 🔄
-                    </button>
-
-                    <button onclick="requestLinkOpen('https://ts-gsm.dz'); event.stopPropagation();" class="relative z-[80] mt-6 text-blue-600 font-bold underline md:text-xl hover:text-blue-800">اكتشف دورات البرمجة للأطفال</button>
-                  </div>
-                </div>
-            `;
-            
-            speakWord('مُبَارَك! أَنْتَ بَطَلٌ أُسْطُورِي! اِفْقَع الْبَالُونَات!');
-            
-            const container = document.getElementById('final-screen-container');
-            const balloonColors = ['🎈', '🎈', '🎈', '🎉', '🎊', '🎀'];
-            
-            const balloonInterval = setInterval(() => {
-                if (!document.body.contains(container)) { clearInterval(balloonInterval); return; }
-                const balloon = document.createElement('div');
-                balloon.className = 'absolute pop-balloon text-6xl md:text-8xl select-none';
-                balloon.textContent = balloonColors[Math.floor(Math.random() * balloonColors.length)];
-                balloon.style.left = `${Math.random() * 90}%`; balloon.style.bottom = `-100px`;
-                
-                balloon.onmousedown = balloon.ontouchstart = function(e) {
-                    e.preventDefault(); e.stopPropagation();
-                    Sound.pop(); triggerHaptic('pop');
-                    createParticles(this, ['💥', '✨', '🌟'], 4);
-                    this.remove();
-                };
-
-                balloon.animate([
-                    { transform: `translateY(0) rotate(${Math.random() * 20 - 10}deg)` },
-                    { transform: `translateY(-${window.innerHeight + 200}px) rotate(${Math.random() * 60 - 30}deg)` }
-                ], { duration: 4000 + Math.random() * 3000, easing: 'linear' }).onfinish = () => balloon.remove();
-                
-                container.appendChild(balloon);
-            }, 800);
-
-            let confCount = 0;
-            const confInterval = setInterval(() => {
-                Sound.win(); createConfetti(); confCount++;
-                if(confCount > 5) clearInterval(confInterval);
-            }, 800);
-        }
-
-        function createConfetti() {
-            const colors = ['bg-red-500', 'bg-blue-500', 'bg-yellow-500', 'bg-green-500', 'bg-pink-500', 'bg-purple-500'];
-            for(let i=0; i<20; i++) {
-                const conf = document.createElement('div');
-                conf.className = `absolute w-4 h-8 md:w-5 md:h-10 pointer-events-none ${colors[Math.floor(Math.random() * colors.length)]} z-[60]`;
-                conf.style.left = `${Math.random() * window.innerWidth}px`; conf.style.top = `-20px`;
-                
-                conf.animate([
-                    { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
-                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360 + 360}deg)`, opacity: 0 }
-                ], { duration: 2000 + Math.random() * 1000, easing: 'ease-in' });
-                
-                document.body.appendChild(conf); setTimeout(() => conf.remove(), 3000);
-            }
-        }
-    </script>
+<body>
+  <button id="hatBtn" class="corner-hat" aria-label="موقع المركز">🎓</button>
+  <main id="home" class="screen center">
+    <section class="panel">
+      <div class="mascot" aria-hidden="true">🦊</div>
+      <h1>عالم سُكّر الصغير</h1>
+      <div id="homeHello" class="hello"></div>
+      <p class="sub">نلعب، نسمع، نكتشف ونتعلّم خطوة بخطوة</p>
+      <div class="age-row" aria-label="اختيار العمر">
+        <button class="choice selected" data-age="tiny">🌱 سنة – سنتان<br><small>خياران وصور كبيرة</small></button>
+        <button class="choice" data-age="junior">🌟 3 – 4 سنوات<br><small>تحديات أكثر</small></button>
+      </div>
+      <div><button id="playBtn" class="primary">هيا نلعب! ▶</button></div>
+      <div class="actions"><button id="profileBtn" class="secondary">👤 اللاعب</button><button id="worldBtn" class="secondary">🗺️ العوالم</button><button id="shopBtn" class="secondary">🛒 الأصدقاء</button><button id="parentBtn" class="secondary">⚙️ للوالدين</button></div>
+      <p class="sub" style="font-size:.85rem;margin-bottom:0">تعلم آمن • بلا إعلانات • يعمل دون إنترنت</p>
+    </section>
+  </main>
+
+  <main id="profile" class="screen center hidden">
+    <section class="panel">
+      <h2>من سيلعب اليوم؟ 👋</h2><p class="sub">اكتب الاسم واختر الشخصية</p>
+      <div class="profile-fields"><input id="playerName" class="name-input" type="text" maxlength="18" autocomplete="off" placeholder="اسم اللاعب" aria-label="اسم اللاعب"><div class="gender-row"><button class="gender" data-gender="boy"><span>👦</span>ولد</button><button class="gender" data-gender="girl"><span>👧</span>بنت</button></div><p id="profileError" class="hello" role="alert"></p></div>
+      <button id="saveProfile" class="primary">حفظ وابدأ ▶</button><button id="profileBack" class="secondary">↩ رجوع</button><p class="privacy-note">🔒 يُحفظ الاسم على هذا الجهاز فقط.</p>
+    </section>
+  </main>
+
+  <main id="map" class="screen hidden">
+    <section class="panel">
+      <h2>خريطة المغامرة 🗺️</h2><p class="sub">اختر عالمًا مفتوحًا</p>
+      <div id="worldGrid" class="worlds"></div>
+      <button class="secondary back">↩ رجوع</button>
+    </section>
+  </main>
+
+  <main id="game" class="screen hidden">
+    <header class="topbar">
+      <div><button id="homeBtn" class="round" aria-label="الرئيسية">⌂</button><button id="gameShopBtn" class="round" aria-label="متجر الأصدقاء">🛒</button></div>
+      <div><div class="world-title" id="worldName"></div><div class="progress"><i id="progressFill"></i></div></div>
+      <button id="soundBtn" class="round" aria-label="الصوت">🔊</button>
+    </header>
+    <section class="lesson"><div id="prompt" class="prompt"></div><button id="repeatBtn" class="say">🔊 اسمع مرة أخرى</button></section>
+    <section class="playarea"><div id="cards" class="cards"></div><div id="gameFriend" class="game-friend" aria-hidden="true">🦊</div></section>
+    <footer class="feedback"><span id="feedback"></span></footer>
+  </main>
+
+  <main id="shop" class="screen hidden">
+    <section class="panel">
+      <h2>متجر الأصدقاء 🛒</h2><p class="sub">اجمع الحلوى أثناء اللعب واختر صديقك المفضّل</p>
+      <div class="wallet">🍬 لديك <b id="candyCount">0</b></div>
+      <div id="shopGrid" class="shop-grid"></div>
+      <button id="shopBack" class="secondary">↩ رجوع</button>
+    </section>
+  </main>
+
+  <main id="reward" class="screen center hidden">
+    <section class="panel"><div id="rewardIcon" class="celebrate">🏆</div><h2 id="rewardTitle">أحسنت يا بطل!</h2><p id="rewardText" class="sub"></p><div id="rewardStars" class="stars"></div><button id="continueBtn" class="primary">تابع المغامرة ➜</button><button class="secondary back">الخريطة 🗺️</button></section><div id="confetti" class="confetti"></div>
+  </main>
+
+  <main id="parents" class="screen center hidden">
+    <section class="panel parent-box"><h2 style="text-align:center">ركن الوالدين ⚙️</h2><p class="sub">صُممت الجلسة لتكون قصيرة ومريحة: خمس جولات في كل عالم، بلا مؤقت وبلا عقاب.</p>
+      <label>الصوت والنطق <button id="parentSound" class="switch on" aria-label="تبديل الصوت"><i></i></button></label>
+      <label>الحركة الهادئة <button id="motionToggle" class="switch on" aria-label="تبديل الحركة"><i></i></button></label>
+      <div class="badges" style="margin:18px 0"><span class="badge">👤 <b id="profileSummary">لاعب</b></span><span class="badge">🍬 <b id="parentCandies">0</b></span><span class="badge">⭐ <b id="totalStars">0</b></span><span class="badge">🏆 <b id="doneWorlds">0</b></span></div>
+      <button id="resetBtn" class="secondary">إعادة التقدم</button><button class="secondary back">↩ رجوع</button>
+    </section>
+  </main>
+
+  <aside id="parentGate" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <section class="gate"><div style="font-size:4rem">🔒</div><h2 id="gateTitle">للوالدين فقط</h2><p class="sub">حل العملية لفتح موقع المركز</p><div id="mathProblem" class="math"></div><div id="mathOptions" class="math-options"></div><button id="gateClose" class="secondary">إلغاء</button></section>
+  </aside>
+
+<script>
+(()=>{'use strict';
+const worlds=[
+ {name:'حديقة الحيوانات',icon:'🐾',color:'#dff8e8',type:'find',items:[['قطة','🐱'],['كلب','🐶'],['أرنب','🐰'],['أسد','🦁'],['فيل','🐘'],['قرد','🐵']]},
+ {name:'ألوان قوس قزح',icon:'🌈',color:'#fff0f6',type:'color',items:[['أحمر','#ff5d73'],['أزرق','#4d96ff'],['أصفر','#ffd93d'],['أخضر','#52c98b'],['برتقالي','#ff9f43'],['بنفسجي','#8c6bea']]},
+ {name:'فواكه لذيذة',icon:'🍎',color:'#fff7db',type:'find',items:[['تفاحة','🍎'],['موزة','🍌'],['فراولة','🍓'],['برتقالة','🍊'],['عنب','🍇'],['بطيخة','🍉']]},
+ {name:'نعدّ معًا',icon:'🔢',color:'#e7f3ff',type:'count',items:[1,2,3,4,5]},
+ {name:'أشكال مرحة',icon:'🔷',color:'#f0edff',type:'find',items:[['دائرة','🔴'],['مربع','🟦'],['مثلث','🔺'],['نجمة','⭐'],['قلب','💜'],['معيّن','🔶']]},
+ {name:'كبير وصغير',icon:'🐘',color:'#e9fbfa',type:'size',items:[['الفيل','🐘'],['الحوت','🐋'],['الشجرة','🌳'],['الكرة','⚽']]},
+ {name:'مشاعري الجميلة',icon:'😊',color:'#fff1e8',type:'find',items:[['سعيد','😊'],['حزين','😢'],['مندهش','😮'],['نعسان','😴'],['ضاحك','😂'],['محب','🥰']]},
+ {name:'مركبات المدينة',icon:'🚗',color:'#eef1f7',type:'find',items:[['سيارة','🚗'],['حافلة','🚌'],['قطار','🚂'],['طائرة','✈️'],['سفينة','🚢'],['دراجة','🚲']]}
+];
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let saved={age:'tiny',unlocked:1,stars:0,completed:[],sound:true,motion:true};try{Object.assign(saved,JSON.parse(localStorage.getItem('sukkarKids')||'{}'))}catch(e){}
+let wi=0,round=0,correct=0,locked=false,currentPrompt='',shopReturn='home';
+const friends=[{face:'🦊',name:'سُكّر',price:0},{face:'🐼',name:'بندق',price:8},{face:'🐰',name:'لوزة',price:12},{face:'🦁',name:'شجاع',price:18},{face:'🐸',name:'نونو',price:24},{face:'🦄',name:'لمعة',price:35}];
+saved.candies=Number(saved.candies)||0;saved.friends=Array.isArray(saved.friends)?saved.friends:['🦊'];saved.activeFriend=saved.activeFriend||'🦊';
+saved.playerName=typeof saved.playerName==='string'?saved.playerName:'';saved.gender=['boy','girl'].includes(saved.gender)?saved.gender:'';
+const screens=['home','map','game','reward','parents','shop','profile'];
+function save(){localStorage.setItem('sukkarKids',JSON.stringify(saved))}
+function show(id){try{speechSynthesis.cancel()}catch(e){}screens.forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));if(id==='home')updateIdentity();if(id==='map')renderMap();if(id==='parents')renderStats();if(id==='shop')renderShop();if(id==='profile')renderProfile()}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function speak(text){currentPrompt=text;if(!saved.sound)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='ar';u.rate=.78;u.pitch=1.12;speechSynthesis.speak(u)}catch(e){}}
+function tone(freq=520,d=.12){if(!saved.sound)return;try{const C=window.AudioContext||window.webkitAudioContext;window._ac=window._ac||new C();const o=_ac.createOscillator(),g=_ac.createGain();o.connect(g);g.connect(_ac.destination);o.frequency.value=freq;g.gain.setValueAtTime(.08,_ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,_ac.currentTime+d);o.start();o.stop(_ac.currentTime+d)}catch(e){}}
+function setPrompt(text){$('#prompt').textContent=text;speak(text)}
+function renderMap(){const g=$('#worldGrid');g.innerHTML='';worlds.forEach((w,i)=>{const b=document.createElement('button');b.className='world '+(i>=saved.unlocked?'locked ':'')+(saved.completed.includes(i)?'done':'');b.disabled=i>=saved.unlocked;b.innerHTML=`<span>${w.icon}</span>${w.name}<small>${saved.completed.includes(i)?'<br>مكتمل ⭐':'<br>'+(i<saved.unlocked?'جاهز':'مغلق 🔒')}</small>`;b.onclick=()=>startWorld(i);g.appendChild(b)})}
+function startWorld(index){if(!saved.playerName||!saved.gender){openProfile(index);return}wi=index;round=0;correct=0;show('game');document.body.style.background=worlds[wi].color;nextRound()}
+function nextRound(){locked=false;$('#feedback').textContent='';$('#worldName').textContent=`${worlds[wi].icon} ${worlds[wi].name} • ${round+1} من 5`;$('#progressFill').style.width=`${round*20}%`;buildChallenge()}
+function buildChallenge(){const w=worlds[wi],cards=$('#cards');cards.innerHTML='';const count=saved.age==='tiny'?2:3;let options=[],answer;
+ if(w.type==='find'){answer=w.items[(round+wi)%w.items.length];options=shuffle([answer,...shuffle(w.items.filter(x=>x!==answer)).slice(0,count-1)]);setPrompt(`أين ${answer[0]}؟`);options.forEach(x=>addCard(x[1],x[0],x===answer))}
+ if(w.type==='color'){answer=w.items[(round+wi)%w.items.length];options=shuffle([answer,...shuffle(w.items.filter(x=>x!==answer)).slice(0,count-1)]);setPrompt(`المس اللون ${answer[0]}`);options.forEach(x=>addColor(x[1],x[0],x===answer))}
+ if(w.type==='count'){const max=saved.age==='tiny'?3:5;answer=round%max+1;options=shuffle([...new Set([answer,answer===1?2:answer-1,answer===max?max-1:answer+1])]).slice(0,count);if(!options.includes(answer))options[0]=answer;options=shuffle(options);setPrompt(`أين ${numberWord(answer)}؟`);options.forEach(n=>addCard('●'.repeat(n),numberWord(n),n===answer,'dots'))}
+ if(w.type==='size'){const base=w.items[round%w.items.length],wantBig=round%2===0;setPrompt(`أين ${wantBig?'الكبير':'الصغير'}؟`);options=shuffle([{big:true},{big:false}]);options.forEach(x=>addCard(base[1],x.big?'كبير':'صغير',x.big===wantBig,x.big?'':'small'))}
+ cards.style.setProperty('--cols',options.length)}
+function numberWord(n){return['','واحد','اثنان','ثلاثة','أربعة','خمسة'][n]}
+function addCard(visual,label,isCorrect,cls=''){const b=document.createElement('button');b.className='card '+cls;b.setAttribute('aria-label',label);b.innerHTML=`<span class="emoji">${visual}</span><span class="label">${label}</span>`;b.onclick=()=>choose(b,isCorrect,label);$('#cards').appendChild(b)}
+function addColor(color,label,isCorrect){const b=document.createElement('button');b.className='card';b.setAttribute('aria-label',label);b.innerHTML=`<span class="color-dot" style="background:${color}"></span><span class="label">${label}</span>`;b.onclick=()=>choose(b,isCorrect,label);$('#cards').appendChild(b)}
+function choose(card,isCorrect,label){if(locked)return;if(isCorrect){locked=true;correct++;saved.candies++;save();card.classList.add('correct');$('#gameFriend').classList.remove('cheer');void $('#gameFriend').offsetWidth;$('#gameFriend').classList.add('cheer');const praise=[`أحسنت يا ${safeName()}! ⭐`,`رائع يا ${safeName()}! 🌟`,`إجابة جميلة يا ${safeName()}! 🎉`][round%3];$('#feedback').textContent=praise+'  🍬';tone(660);setTimeout(()=>tone(880),130);speak(praise);round++;$('#progressFill').style.width=`${round*20}%`;setTimeout(round>=5?finishWorld:nextRound,950)}else{card.classList.remove('wrong');void card.offsetWidth;card.classList.add('wrong');$('#feedback').textContent='جرّب مرة أخرى 💛';tone(260,.18);speak(`${label}. جرّب مرة أخرى`)}}
+function finishWorld(){const earned=correct;saved.stars+=earned;if(!saved.completed.includes(wi))saved.completed.push(wi);saved.unlocked=Math.max(saved.unlocked,Math.min(worlds.length,wi+2));save();$('#rewardIcon').textContent=playerAvatar();$('#rewardTitle').textContent=`أحسنت يا ${safeName()}!`;$('#rewardText').textContent=`جمعت ${earned} نجوم في ${worlds[wi].name}`;$('#rewardStars').textContent='⭐'.repeat(earned)+'☆'.repeat(5-earned);$('#continueBtn').textContent=wi<worlds.length-1?'العالم التالي ➜':'العب من جديد ↻';show('reward');celebrate();speak(`أحسنت يا ${safeName()}`)}
+function celebrate(){const c=$('#confetti');c.innerHTML='';if(!saved.motion)return;for(let i=0;i<22;i++){const e=document.createElement('i');e.textContent=['⭐','🎉','●','◆'][i%4];e.style.left=Math.random()*100+'%';e.style.animationDelay=Math.random()*.8+'s';e.style.color=['#ff6fae','#6c5ce7','#ffd93d','#49c98b'][i%4];c.appendChild(e)}setTimeout(()=>c.innerHTML='',3500)}
+function renderStats(){$('#totalStars').textContent=saved.stars;$('#doneWorlds').textContent=saved.completed.length;$('#parentCandies').textContent=saved.candies;$('#profileSummary').textContent=(saved.playerName||'لاعب')+' '+playerAvatar();$('#parentSound').classList.toggle('on',saved.sound);$('#motionToggle').classList.toggle('on',saved.motion);document.body.classList.toggle('reduce-motion',!saved.motion)}
+function renderShop(){$('#candyCount').textContent=saved.candies;const g=$('#shopGrid');g.innerHTML='';friends.forEach(f=>{const owned=saved.friends.includes(f.face),active=saved.activeFriend===f.face,b=document.createElement('button');b.className='friend '+(active?'active ':'')+(owned?'':'locked');b.innerHTML=`<span class="face">${f.face}</span>${f.name}<small><br>${active?'يلعب معك ✓':owned?'اختيار':f.price+' 🍬'}</small>`;b.onclick=()=>{if(owned){saved.activeFriend=f.face}else if(saved.candies>=f.price){saved.candies-=f.price;saved.friends.push(f.face);saved.activeFriend=f.face;tone(880);speak('صديق جديد')}else{toast('تحتاج إلى حلوى أكثر 🍬');return}save();updateFriend();renderShop()};g.appendChild(b)})}
+function playerAvatar(){return saved.gender==='girl'?'👧':saved.gender==='boy'?'👦':'🧒'}function safeName(){return(saved.playerName||'بطلنا').trim().slice(0,18)}
+function updateFriend(){$('#gameFriend').textContent=playerAvatar()+saved.activeFriend;$('.mascot').textContent=playerAvatar()+saved.activeFriend;updateIdentity()}
+function updateIdentity(){$('#homeHello').textContent=saved.playerName?`مرحبًا ${safeName()}! ${playerAvatar()}`:''}
+let profileNext=null;function openProfile(next=null){profileNext=next;show('profile')}function renderProfile(){$('#playerName').value=saved.playerName;$$('[data-gender]').forEach(b=>b.classList.toggle('selected',b.dataset.gender===saved.gender));$('#profileError').textContent=''}
+function toast(text){const t=document.createElement('div');t.className='toast';t.textContent=text;document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
+function openGate(){const a=Math.floor(Math.random()*5)+2,b=Math.floor(Math.random()*5)+1,answer=a+b;$('#mathProblem').textContent=`${a} + ${b} = ?`;const vals=shuffle([answer,answer+1,Math.max(1,answer-1)]);$('#mathOptions').innerHTML='';vals.forEach(v=>{const x=document.createElement('button');x.textContent=v;x.onclick=()=>{if(v===answer){$('#parentGate').classList.add('hidden');window.open('https://ts-gsm.dz','_blank','noopener')}else{tone(220);toast('حاول مرة أخرى')}};$('#mathOptions').appendChild(x)});$('#parentGate').classList.remove('hidden')}
+$$('[data-age]').forEach(b=>b.onclick=()=>{$$('[data-age]').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');saved.age=b.dataset.age;save();tone()});$('#playBtn').onclick=()=>startWorld(Math.min(saved.unlocked-1,worlds.length-1));$('#worldBtn').onclick=()=>show('map');$('#shopBtn').onclick=()=>show('shop');$('#gameShopBtn').onclick=()=>show('shop');$('#parentBtn').onclick=()=>show('parents');$$('.back').forEach(b=>b.onclick=()=>show(b.closest('#reward')?'map':'home'));$('#homeBtn').onclick=()=>show('home');$('#repeatBtn').onclick=()=>speak(currentPrompt);$('#soundBtn').onclick=()=>{saved.sound=!saved.sound;$('#soundBtn').textContent=saved.sound?'🔊':'🔇';save()};$('#parentSound').onclick=()=>{saved.sound=!saved.sound;save();renderStats()};$('#motionToggle').onclick=()=>{saved.motion=!saved.motion;save();renderStats()};$('#continueBtn').onclick=()=>startWorld(wi<worlds.length-1?wi+1:0);$('#hatBtn').onclick=openGate;$('#gateClose').onclick=()=>$('#parentGate').classList.add('hidden');$('#resetBtn').onclick=()=>{if(confirm('هل تريد إعادة كل النجوم والعوالم والمشتريات؟')){saved.unlocked=1;saved.stars=0;saved.candies=0;saved.completed=[];saved.friends=['🦊'];saved.activeFriend='🦊';save();renderStats();updateFriend()}};
+$('#shopBtn').onclick=()=>{shopReturn='home';show('shop')};$('#gameShopBtn').onclick=()=>{shopReturn='game';show('shop')};$('#shopBack').onclick=()=>show(shopReturn);
+$('#profileBtn').onclick=()=>openProfile(null);$('#profileBack').onclick=()=>show('home');$$('[data-gender]').forEach(b=>b.onclick=()=>{$$('[data-gender]').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');saved.gender=b.dataset.gender;tone()});$('#saveProfile').onclick=()=>{const name=$('#playerName').value.trim().replace(/[<>]/g,'').slice(0,18);if(name.length<2){$('#profileError').textContent='اكتب اسمًا من حرفين على الأقل';return}if(!saved.gender){$('#profileError').textContent='اختر ولدًا أو بنتًا';return}saved.playerName=name;save();updateFriend();const next=profileNext;profileNext=null;if(Number.isInteger(next))startWorld(next);else show('home')};$('#playerName').addEventListener('keydown',e=>{if(e.key==='Enter')$('#saveProfile').click()});
+$('#soundBtn').textContent=saved.sound?'🔊':'🔇';$$('[data-age]').forEach(b=>b.classList.toggle('selected',b.dataset.age===saved.age));document.body.classList.toggle('reduce-motion',!saved.motion);updateFriend();
+})();
+</script>
 </body>
 </html>
